@@ -1,0 +1,1421 @@
+
+======== KEYCLOAK INSTALLATION ========
+--- Keycloak directory ---
+total 52
+drwxr-xr-x 8 keycloak keycloak  4096 Apr  6 11:25 .
+drwxr-xr-x 3 root     root      4096 Apr  6 11:01 ..
+drwxr-xr-x 3 keycloak keycloak  4096 Apr  2 14:21 bin
+drwxr-xr-x 3 keycloak keycloak  4096 Apr  6 11:24 conf
+drwxr-xr-x 4 keycloak keycloak  4096 Apr  6 11:19 data
+drwxr-xr-x 5 keycloak keycloak  4096 Apr  2 14:21 lib
+-rw-r--r-- 1 keycloak keycloak 11358 Apr  2 14:09 LICENSE.txt
+drwxr-xr-x 2 keycloak keycloak  4096 Apr  6 11:01 providers
+-rw-r--r-- 1 keycloak keycloak   641 Apr  2 14:09 README.md
+drwxr-xr-x 2 keycloak keycloak  4096 Apr  6 11:01 themes
+-rw-r--r-- 1 keycloak keycloak    26 Apr  2 14:09 version.txt
+--- Keycloak version ---
+Keycloak - Version 26.5.7
+Keycloak 26.5.7
+JVM: 21.0.10 (Ubuntu OpenJDK 64-Bit Server VM 21.0.10+7-Ubuntu-122.04)
+OS: Linux 5.15.0-174-generic amd64
+/opt/keycloak/lib/lib/main/org.keycloak.keycloak-server-spi-26.5.7.jar
+/opt/keycloak/lib/lib/main/org.keycloak.keycloak-server-spi-private-26.5.7.jar
+
+======== KEYCLOAK CONF ========
+--- /opt/keycloak/conf/keycloak.conf ---
+db=postgres
+db-username=gikeycloak
+db-password=5ucc3SS!@#s
+db-url=jdbc:postgresql://localhost:5432/keycloak
+
+hostname=sso.gint.co.za
+hostname-strict=true
+http-enabled=true
+http-port=8080
+proxy-headers=xforwarded
+
+health-enabled=true
+metrics-enabled=true
+
+======== KEYCLOAK SYSTEMD SERVICE ========
+[Unit]
+Description=Keycloak Identity Server
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=keycloak
+Group=keycloak
+WorkingDirectory=/opt/keycloak
+Environment=KC_BOOTSTRAP_ADMIN_USERNAME=admin
+Environment=KC_BOOTSTRAP_ADMIN_PASSWORD=5ucc3SS!@#s
+ExecStart=/opt/keycloak/bin/kc.sh start
+Restart=always
+RestartSec=10
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
+
+======== NGINX CONFIG (Keycloak reverse proxy) ========
+--- sites-available/keycloak ---
+server {
+    listen 80;
+    server_name sso.local;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+
+        proxy_buffering off;
+        proxy_request_buffering off;
+    }
+}
+--- nginx.conf ---
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+	worker_connections 768;
+	# multi_accept on;
+}
+
+http {
+
+	##
+	# Basic Settings
+	##
+
+	sendfile on;
+	tcp_nopush on;
+	types_hash_max_size 2048;
+	# server_tokens off;
+
+	# server_names_hash_bucket_size 64;
+	# server_name_in_redirect off;
+
+	include /etc/nginx/mime.types;
+	default_type application/octet-stream;
+
+	##
+	# SSL Settings
+	##
+
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+	ssl_prefer_server_ciphers on;
+
+	##
+	# Logging Settings
+	##
+
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
+
+	##
+	# Gzip Settings
+	##
+
+	gzip on;
+
+	# gzip_vary on;
+	# gzip_proxied any;
+	# gzip_comp_level 6;
+	# gzip_buffers 16 8k;
+	# gzip_http_version 1.1;
+	# gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+	##
+	# Virtual Host Configs
+	##
+
+	include /etc/nginx/conf.d/*.conf;
+	include /etc/nginx/sites-enabled/*;
+
+======== POSTGRESQL — KEYCLOAK DATABASE ========
+--- Tables in keycloak DB ---
+                      List of relations
+ Schema |             Name              | Type  |   Owner    
+--------+-------------------------------+-------+------------
+ public | admin_event_entity            | table | gikeycloak
+ public | associated_policy             | table | gikeycloak
+ public | authentication_execution      | table | gikeycloak
+ public | authentication_flow           | table | gikeycloak
+ public | authenticator_config          | table | gikeycloak
+ public | authenticator_config_entry    | table | gikeycloak
+ public | broker_link                   | table | gikeycloak
+ public | client                        | table | gikeycloak
+ public | client_attributes             | table | gikeycloak
+ public | client_auth_flow_bindings     | table | gikeycloak
+ public | client_initial_access         | table | gikeycloak
+ public | client_node_registrations     | table | gikeycloak
+ public | client_scope                  | table | gikeycloak
+ public | client_scope_attributes       | table | gikeycloak
+ public | client_scope_client           | table | gikeycloak
+ public | client_scope_role_mapping     | table | gikeycloak
+ public | component                     | table | gikeycloak
+ public | component_config              | table | gikeycloak
+ public | composite_role                | table | gikeycloak
+ public | credential                    | table | gikeycloak
+ public | databasechangelog             | table | gikeycloak
+ public | databasechangeloglock         | table | gikeycloak
+ public | default_client_scope          | table | gikeycloak
+ public | event_entity                  | table | gikeycloak
+ public | fed_user_attribute            | table | gikeycloak
+ public | fed_user_consent              | table | gikeycloak
+ public | fed_user_consent_cl_scope     | table | gikeycloak
+ public | fed_user_credential           | table | gikeycloak
+ public | fed_user_group_membership     | table | gikeycloak
+ public | fed_user_required_action      | table | gikeycloak
+ public | fed_user_role_mapping         | table | gikeycloak
+ public | federated_identity            | table | gikeycloak
+ public | federated_user                | table | gikeycloak
+ public | group_attribute               | table | gikeycloak
+ public | group_role_mapping            | table | gikeycloak
+ public | identity_provider             | table | gikeycloak
+ public | identity_provider_config      | table | gikeycloak
+ public | identity_provider_mapper      | table | gikeycloak
+ public | idp_mapper_config             | table | gikeycloak
+ public | jgroups_ping                  | table | gikeycloak
+ public | keycloak_group                | table | gikeycloak
+ public | keycloak_role                 | table | gikeycloak
+ public | migration_model               | table | gikeycloak
+ public | offline_client_session        | table | gikeycloak
+ public | offline_user_session          | table | gikeycloak
+ public | org                           | table | gikeycloak
+ public | org_domain                    | table | gikeycloak
+ public | org_invitation                | table | gikeycloak
+ public | policy_config                 | table | gikeycloak
+ public | protocol_mapper               | table | gikeycloak
+ public | protocol_mapper_config        | table | gikeycloak
+ public | realm                         | table | gikeycloak
+ public | realm_attribute               | table | gikeycloak
+ public | realm_default_groups          | table | gikeycloak
+ public | realm_enabled_event_types     | table | gikeycloak
+ public | realm_events_listeners        | table | gikeycloak
+ public | realm_localizations           | table | gikeycloak
+ public | realm_required_credential     | table | gikeycloak
+ public | realm_smtp_config             | table | gikeycloak
+ public | realm_supported_locales       | table | gikeycloak
+ public | redirect_uris                 | table | gikeycloak
+ public | required_action_config        | table | gikeycloak
+ public | required_action_provider      | table | gikeycloak
+ public | resource_attribute            | table | gikeycloak
+ public | resource_policy               | table | gikeycloak
+ public | resource_scope                | table | gikeycloak
+ public | resource_server               | table | gikeycloak
+ public | resource_server_perm_ticket   | table | gikeycloak
+ public | resource_server_policy        | table | gikeycloak
+ public | resource_server_resource      | table | gikeycloak
+ public | resource_server_scope         | table | gikeycloak
+ public | resource_uris                 | table | gikeycloak
+ public | revoked_token                 | table | gikeycloak
+ public | role_attribute                | table | gikeycloak
+ public | scope_mapping                 | table | gikeycloak
+ public | scope_policy                  | table | gikeycloak
+ public | server_config                 | table | gikeycloak
+ public | user_attribute                | table | gikeycloak
+ public | user_consent                  | table | gikeycloak
+ public | user_consent_client_scope     | table | gikeycloak
+ public | user_entity                   | table | gikeycloak
+ public | user_federation_config        | table | gikeycloak
+ public | user_federation_mapper        | table | gikeycloak
+ public | user_federation_mapper_config | table | gikeycloak
+ public | user_federation_provider      | table | gikeycloak
+ public | user_group_membership         | table | gikeycloak
+ public | user_required_action          | table | gikeycloak
+ public | user_role_mapping             | table | gikeycloak
+ public | web_origins                   | table | gikeycloak
+ public | workflow_state                | table | gikeycloak
+(90 rows)
+
+
+======== KEYCLOAK REALMS ========
+
+======== KEYCLOAK CLIENTS (all realms) ========
+      client_id      |      name       | enabled |    protocol    | public_client |              secret              |        base_url        |        root_url        | realm_name 
+---------------------+-----------------+---------+----------------+---------------+----------------------------------+------------------------+------------------------+------------
+ gint-app-server     | Gint APP Server | t       | openid-connect | f             | 1kCQXMLb5vlCyRrIfKXFIbbA9sry4zyJ |                        |                        | gint
+ gint-download-api   | Download API    | t       | openid-connect | f             | V0EFFrDaRCBBAKPv9sdYeSlJ67tm7OkP |                        |                        | gint
+ gint-ocr-platform   | GI OCR Platform | t       | openid-connect | f             | hGnwTjfr8UsWcJzFt1FcKus5yRKpU9rv | http://192.168.1.66    | http://192.168.1.66    | gint
+ gint-php-web        | GI PHP Web App  | t       | openid-connect | t             |                                  | http://apps.gint.co.za | http://apps.gint.co.za | gint
+ gint-processing-api | Processing API  | t       | openid-connect | f             | xf7ZlcjZP5PAsYykexLvyMADZwLvaExp |                        |                        | gint
+ gint-realm          | gint Realm      | t       |                | f             |                                  |                        |                        | master
+ master-realm        | master Realm    | t       |                | f             |                                  |                        |                        | master
+(7 rows)
+
+
+======== KEYCLOAK REDIRECT URIS (per client) ========
+       client_id        | realm_name |           redirect_uri            
+------------------------+------------+-----------------------------------
+ gint-app-server        | gint       | /*
+ gint-download-api      | gint       | /*
+ gint-ocr-platform      | gint       | http://192.168.1.66/*
+ gint-ocr-platform      | gint       | http://192.168.1.66/auth/callback
+ gint-php-web           | gint       | http://127.0.0.1/*
+ gint-php-web           | gint       | http://apps.gint.co.za/callback
+ gint-php-web           | gint       | http://localhost/*
+ gint-php-web           | gint       | http://apps.gint.co.za/*
+ gint-processing-api    | gint       | /*
+ security-admin-console | gint       | /admin/gint/console/*
+ security-admin-console | master     | /admin/master/console/*
+(11 rows)
+
+
+======== KEYCLOAK USERS (all realms) ========
+                  id                  |              username               |         email          | first_name | last_name | enabled | email_verified | realm_name | created_timestamp 
+--------------------------------------+-------------------------------------+------------------------+------------+-----------+---------+----------------+------------+-------------------
+ cbfcb610-91bb-4531-acf1-12754d8f7691 | analyst1                            | analyst1@gint.co.za    | Analyst    |           | t       | t              | gint       |     1775482631909
+ 7ba56512-f379-4660-9e38-60558663a5bc | clienttest1                         | clienttest1@gint.co.za | Client     | Test      | t       | t              | gint       |     1775482533415
+ dbdee667-9c8b-4165-bfd5-df3a8437e678 | giadmin                             | giadmin@gint.co.za     | GI         | Admin     | t       | t              | gint       |     1775482335864
+ 745cfbfe-f1f2-43e8-80a3-a2b36b81a719 | service-account-gint-app-server     |                        |            |           | t       | f              | gint       |     1775482004804
+ 711014ac-4d79-4c8a-8d2d-0f838ba96cdd | service-account-gint-download-api   |                        |            |           | t       | f              | gint       |     1775480804998
+ 84126c15-f014-4f8c-84f2-1e714cea8c12 | service-account-gint-ocr-platform   |                        |            |           | t       | f              | gint       |     1775732487153
+ 1554666c-9182-4cff-a7c1-3d7119397851 | service-account-gint-processing-api |                        |            |           | t       | f              | gint       |     1775481646463
+ aabd0312-c3ba-4ebb-a326-95348e019529 | admin                               |                        |            |           | t       | f              | master     |     1775472927017
+(8 rows)
+
+
+======== KEYCLOAK GROUPS ========
+                  id                  |   name   | realm_name | parent_group 
+--------------------------------------+----------+------------+--------------
+ 3fba9e2b-7278-4eb8-8d7f-c51149083c99 | Admins   | gint       |  
+ de9ac10c-13c5-40d3-ac08-277e60cb7b43 | Analysts | gint       |  
+ d610ee24-9e60-4add-b915-a2f37951117b | Clients  | gint       |  
+(3 rows)
+
+
+======== KEYCLOAK ROLES (realm-level) ========
+                  id                  |         name         |            description             | realm_name 
+--------------------------------------+----------------------+------------------------------------+------------
+ ef595afb-23f1-47ed-b215-86308f32ba9f | analyst              | internal analyst/investigator role | gint
+ f8febe14-4285-4b2d-b735-6deb497b061a | app_server           | trusted backend application role   | gint
+ 7f1efa5b-46b0-4af7-98c2-2e7813ce8692 | client_user          | paying users/customers             | gint
+ d5f88de9-9d10-4f1b-af01-36d396ce4974 | default-roles-gint   | ${role_default-roles}              | gint
+ f2002c29-c620-40a1-8761-e7db3e242009 | download_server      | controlled download broker         | gint
+ f5253744-d949-41f7-b619-1f4c5dfaafe4 | offline_access       | ${role_offline-access}             | gint
+ 48cb709f-7cc8-49b1-aeba-e9550087c9f1 | platform_admin       | internal admins                    | gint
+ 1ce9516f-d720-4649-951c-cfc58f747493 | processing_server    | Python/API processing tier         | gint
+ 9f5c478d-0c9e-40db-9eb4-2a9fe83db8e8 | uma_authorization    | ${role_uma_authorization}          | gint
+ 631aa278-2b9e-43c7-b17e-c6943ccdc470 | admin                | ${role_admin}                      | master
+ 83995585-af81-4823-a4f6-16fbee657861 | create-realm         | ${role_create-realm}               | master
+ 71f3db7f-c7e8-4194-99c6-0e2491f52e62 | default-roles-master | ${role_default-roles}              | master
+ 0cd83f2f-5f91-434f-a810-31bdfa0a3d17 | offline_access       | ${role_offline-access}             | master
+ a5e20740-8619-4ddb-bf0a-04069055e21a | uma_authorization    | ${role_uma_authorization}          | master
+(14 rows)
+
+
+======== KEYCLOAK USER-ROLE MAPPINGS ========
+              username               |      role_name       | realm_name 
+-------------------------------------+----------------------+------------
+ analyst1                            | default-roles-gint   | gint
+ clienttest1                         | default-roles-gint   | gint
+ giadmin                             | default-roles-gint   | gint
+ service-account-gint-app-server     | default-roles-gint   | gint
+ service-account-gint-app-server     | app_server           | gint
+ service-account-gint-download-api   | download_server      | gint
+ service-account-gint-download-api   | default-roles-gint   | gint
+ service-account-gint-ocr-platform   | default-roles-gint   | gint
+ service-account-gint-processing-api | processing_server    | gint
+ service-account-gint-processing-api | default-roles-gint   | gint
+ admin                               | admin                | master
+ admin                               | default-roles-master | master
+(12 rows)
+
+
+======== KEYCLOAK USER-GROUP MAPPINGS ========
+  username   | group_name | realm_name 
+-------------+------------+------------
+ analyst1    | Analysts   | gint
+ clienttest1 | Clients    | gint
+ giadmin     | Admins     | gint
+(3 rows)
+
+
+======== KEYCLOAK IDENTITY PROVIDERS ========
+ internal_id | provider_id | provider_alias | enabled | realm_name 
+-------------+-------------+----------------+---------+------------
+(0 rows)
+
+
+======== KEYCLOAK CLIENT SCOPES ========
+                  id                  |       name        |    protocol    |                                      description                                       | realm_name 
+--------------------------------------+-------------------+----------------+----------------------------------------------------------------------------------------+------------
+ 1759a133-1dbe-4e0c-b1ae-e44a8065689d | acr               | openid-connect | OpenID Connect scope for add acr (authentication context class reference) to the token | gint
+ 3329da25-48f0-46c3-afc6-6392af695acc | address           | openid-connect | OpenID Connect built-in scope: address                                                 | gint
+ eee4d2eb-8319-4095-bd95-6971ae7031cd | basic             | openid-connect | OpenID Connect scope for add all basic claims to the token                             | gint
+ 31823339-3a34-4dd3-b4bf-4fd224ce5de1 | email             | openid-connect | OpenID Connect built-in scope: email                                                   | gint
+ ab7fa1c2-d781-495c-97a9-1f80d974290c | microprofile-jwt  | openid-connect | Microprofile - JWT built-in scope                                                      | gint
+ bd6e0c69-2969-4c27-9bd0-c89f040c7b86 | offline_access    | openid-connect | OpenID Connect built-in scope: offline_access                                          | gint
+ 6139eeda-20b1-49a3-b415-36c59ca4c3b9 | organization      | openid-connect | Additional claims about the organization a subject belongs to                          | gint
+ b5895635-5863-4da5-b598-6dcf0756aef3 | phone             | openid-connect | OpenID Connect built-in scope: phone                                                   | gint
+ e3401f1a-08d1-452c-afde-9804b3e364d6 | profile           | openid-connect | OpenID Connect built-in scope: profile                                                 | gint
+ 064ef783-6274-49de-9abc-4b75a1795e9d | role_list         | saml           | SAML role list                                                                         | gint
+ f7aac7e5-04dd-4c5d-ad1b-ffc04e3a8060 | roles             | openid-connect | OpenID Connect scope for add user roles to the access token                            | gint
+ 04df9557-1520-45cf-afba-6bc9c5464eab | saml_organization | saml           | Organization Membership                                                                | gint
+ dab1470d-4fcb-407a-9f29-b0589d78c2e4 | service_account   | openid-connect | Specific scope for a client enabled for service accounts                               | gint
+ 1b447dad-d565-4605-8f49-206a0bc82938 | web-origins       | openid-connect | OpenID Connect scope for add allowed web origins to the access token                   | gint
+ 067a84ce-1a57-4ce6-ab19-94187546dd83 | acr               | openid-connect | OpenID Connect scope for add acr (authentication context class reference) to the token | master
+ 8c45ef16-dee9-4640-82b8-78257b4c0c51 | address           | openid-connect | OpenID Connect built-in scope: address                                                 | master
+ b06270c9-739d-4bd0-a3e2-25de32724c41 | basic             | openid-connect | OpenID Connect scope for add all basic claims to the token                             | master
+ 5027a0f8-caf8-4e7d-bd5f-8e979fe39a0c | email             | openid-connect | OpenID Connect built-in scope: email                                                   | master
+ 73536ad7-efb7-4ea1-a454-3021b5ec9aad | microprofile-jwt  | openid-connect | Microprofile - JWT built-in scope                                                      | master
+ e5f47837-c1fa-45cf-81b7-a377b43e348a | offline_access    | openid-connect | OpenID Connect built-in scope: offline_access                                          | master
+ 35cff4a3-f340-444f-b8b8-651c53f944f6 | organization      | openid-connect | Additional claims about the organization a subject belongs to                          | master
+ a6f97aeb-b722-49c0-a428-1a2a06cd8b25 | phone             | openid-connect | OpenID Connect built-in scope: phone                                                   | master
+ 93c0be07-e540-48b1-9c41-464aff9c0d13 | profile           | openid-connect | OpenID Connect built-in scope: profile                                                 | master
+ ecbb71d7-4c6e-4b12-ba12-f978f35b951e | role_list         | saml           | SAML role list                                                                         | master
+ b2b7580b-069b-4da6-831e-5d7c7e0e5050 | roles             | openid-connect | OpenID Connect scope for add user roles to the access token                            | master
+ ac425b43-6099-4d49-93cc-c7f4ba5be944 | saml_organization | saml           | Organization Membership                                                                | master
+ cdeb67d2-e309-4cad-829d-6f7dd0dfef6e | service_account   | openid-connect | Specific scope for a client enabled for service accounts                               | master
+ 2a487f63-90ef-490f-a351-6bd1c26c0bc2 | web-origins       | openid-connect | OpenID Connect scope for add allowed web origins to the access token                   | master
+(28 rows)
+
+
+======== KEYCLOAK ADMIN URL ========
+Keycloak should be accessible at:
+  - Direct: http://192.168.1.59:8080
+  - Via Nginx: http://192.168.1.59
+
+--- Test connectivity ---
+HTTP 200
+{
+    "issuer": "http://sso.gint.co.za:8080/realms/master",
+    "authorization_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/auth",
+    "token_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/token",
+    "introspection_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/token/introspect",
+    "userinfo_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/userinfo",
+    "end_session_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/logout",
+    "frontchannel_logout_session_supported": true,
+    "frontchannel_logout_supported": true,
+    "jwks_uri": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/certs",
+    "check_session_iframe": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/login-status-iframe.html",
+    "grant_types_supported": [
+        "authorization_code",
+        "client_credentials",
+        "implicit",
+        "password",
+        "refresh_token",
+        "urn:ietf:params:oauth:grant-type:device_code",
+        "urn:ietf:params:oauth:grant-type:token-exchange",
+        "urn:ietf:params:oauth:grant-type:uma-ticket",
+        "urn:openid:params:grant-type:ciba"
+    ],
+    "acr_values_supported": [
+        "0",
+        "1"
+    ],
+    "response_types_supported": [
+        "code",
+        "none",
+        "id_token",
+        "token",
+        "id_token token",
+        "code id_token",
+        "code token",
+        "code id_token token"
+    ],
+    "subject_types_supported": [
+        "public",
+        "pairwise"
+    ],
+    "prompt_values_supported": [
+        "none",
+        "login",
+        "consent"
+    ],
+    "id_token_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "id_token_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "id_token_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "userinfo_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512",
+        "none"
+    ],
+    "userinfo_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "userinfo_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "request_object_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512",
+        "none"
+    ],
+    "request_object_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "request_object_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "response_modes_supported": [
+        "query",
+        "fragment",
+        "form_post",
+        "query.jwt",
+        "fragment.jwt",
+        "form_post.jwt",
+        "jwt"
+    ],
+    "registration_endpoint": "http://sso.gint.co.za:8080/realms/master/clients-registrations/openid-connect",
+    "token_endpoint_auth_methods_supported": [
+        "private_key_jwt",
+        "client_secret_basic",
+        "client_secret_post",
+        "tls_client_auth",
+        "client_secret_jwt"
+    ],
+    "token_endpoint_auth_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "introspection_endpoint_auth_methods_supported": [
+        "private_key_jwt",
+        "client_secret_basic",
+        "client_secret_post",
+        "tls_client_auth",
+        "client_secret_jwt"
+    ],
+    "introspection_endpoint_auth_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "authorization_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "authorization_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "authorization_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "claims_supported": [
+        "iss",
+        "sub",
+        "aud",
+        "exp",
+        "iat",
+        "auth_time",
+        "name",
+        "given_name",
+        "family_name",
+        "preferred_username",
+        "email",
+        "acr",
+        "azp",
+        "nonce"
+    ],
+    "claim_types_supported": [
+        "normal"
+    ],
+    "claims_parameter_supported": true,
+    "scopes_supported": [
+        "openid",
+        "offline_access",
+        "organization",
+        "email",
+        "roles",
+        "profile",
+        "web-origins",
+        "service_account",
+        "acr",
+        "address",
+        "microprofile-jwt",
+        "phone",
+        "basic"
+    ],
+    "request_parameter_supported": true,
+    "request_uri_parameter_supported": true,
+    "require_request_uri_registration": true,
+    "code_challenge_methods_supported": [
+        "plain",
+        "S256"
+    ],
+    "tls_client_certificate_bound_access_tokens": true,
+    "dpop_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "ES256",
+        "RS256",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "revocation_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/revoke",
+    "revocation_endpoint_auth_methods_supported": [
+        "private_key_jwt",
+        "client_secret_basic",
+        "client_secret_post",
+        "tls_client_auth",
+        "client_secret_jwt"
+    ],
+    "revocation_endpoint_auth_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "backchannel_logout_supported": true,
+    "backchannel_logout_session_supported": true,
+    "device_authorization_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/auth/device",
+    "backchannel_token_delivery_modes_supported": [
+        "poll",
+        "ping"
+    ],
+    "backchannel_authentication_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/ext/ciba/auth",
+    "backchannel_authentication_request_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "ES256",
+        "RS256",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "require_pushed_authorization_requests": false,
+    "pushed_authorization_request_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/ext/par/request",
+    "mtls_endpoint_aliases": {
+        "token_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/token",
+        "revocation_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/revoke",
+        "introspection_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/token/introspect",
+        "device_authorization_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/auth/device",
+        "registration_endpoint": "http://sso.gint.co.za:8080/realms/master/clients-registrations/openid-connect",
+        "userinfo_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/userinfo",
+        "pushed_authorization_request_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/ext/par/request",
+        "backchannel_authentication_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/ext/ciba/auth"
+    },
+    "authorization_response_iss_parameter_supported": true
+}
+
+======== ALL REALMS OIDC ENDPOINTS ========
+--- Realm: master ---
+{
+    "issuer": "http://sso.gint.co.za:8080/realms/master",
+    "authorization_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/auth",
+    "token_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/token",
+    "introspection_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/token/introspect",
+    "userinfo_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/userinfo",
+    "end_session_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/logout",
+    "frontchannel_logout_session_supported": true,
+    "frontchannel_logout_supported": true,
+    "jwks_uri": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/certs",
+    "check_session_iframe": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/login-status-iframe.html",
+    "grant_types_supported": [
+        "authorization_code",
+        "client_credentials",
+        "implicit",
+        "password",
+        "refresh_token",
+        "urn:ietf:params:oauth:grant-type:device_code",
+        "urn:ietf:params:oauth:grant-type:token-exchange",
+        "urn:ietf:params:oauth:grant-type:uma-ticket",
+        "urn:openid:params:grant-type:ciba"
+    ],
+    "acr_values_supported": [
+        "0",
+        "1"
+    ],
+    "response_types_supported": [
+        "code",
+        "none",
+        "id_token",
+        "token",
+        "id_token token",
+        "code id_token",
+        "code token",
+        "code id_token token"
+    ],
+    "subject_types_supported": [
+        "public",
+        "pairwise"
+    ],
+    "prompt_values_supported": [
+        "none",
+        "login",
+        "consent"
+    ],
+    "id_token_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "id_token_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "id_token_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "userinfo_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512",
+        "none"
+    ],
+    "userinfo_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "userinfo_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "request_object_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512",
+        "none"
+    ],
+    "request_object_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "request_object_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "response_modes_supported": [
+        "query",
+        "fragment",
+        "form_post",
+        "query.jwt",
+        "fragment.jwt",
+        "form_post.jwt",
+        "jwt"
+    ],
+    "registration_endpoint": "http://sso.gint.co.za:8080/realms/master/clients-registrations/openid-connect",
+    "token_endpoint_auth_methods_supported": [
+        "private_key_jwt",
+        "client_secret_basic",
+        "client_secret_post",
+        "tls_client_auth",
+        "client_secret_jwt"
+    ],
+    "token_endpoint_auth_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "introspection_endpoint_auth_methods_supported": [
+        "private_key_jwt",
+        "client_secret_basic",
+        "client_secret_post",
+        "tls_client_auth",
+        "client_secret_jwt"
+    ],
+    "introspection_endpoint_auth_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "authorization_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "authorization_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "authorization_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "claims_supported": [
+        "iss",
+        "sub",
+        "aud",
+        "exp",
+        "iat",
+        "auth_time",
+        "name",
+        "given_name",
+        "family_name",
+        "preferred_username",
+        "email",
+        "acr",
+        "azp",
+        "nonce"
+    ],
+    "claim_types_supported": [
+        "normal"
+    ],
+    "claims_parameter_supported": true,
+    "scopes_supported": [
+        "openid",
+        "offline_access",
+        "organization",
+        "email",
+        "roles",
+        "profile",
+        "web-origins",
+        "service_account",
+        "acr",
+        "address",
+        "microprofile-jwt",
+        "phone",
+        "basic"
+    ],
+    "request_parameter_supported": true,
+    "request_uri_parameter_supported": true,
+    "require_request_uri_registration": true,
+    "code_challenge_methods_supported": [
+        "plain",
+        "S256"
+    ],
+    "tls_client_certificate_bound_access_tokens": true,
+    "dpop_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "ES256",
+        "RS256",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "revocation_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/revoke",
+    "revocation_endpoint_auth_methods_supported": [
+        "private_key_jwt",
+        "client_secret_basic",
+        "client_secret_post",
+        "tls_client_auth",
+        "client_secret_jwt"
+    ],
+    "revocation_endpoint_auth_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "backchannel_logout_supported": true,
+    "backchannel_logout_session_supported": true,
+    "device_authorization_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/auth/device",
+    "backchannel_token_delivery_modes_supported": [
+        "poll",
+        "ping"
+    ],
+    "backchannel_authentication_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/ext/ciba/auth",
+    "backchannel_authentication_request_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "ES256",
+        "RS256",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "require_pushed_authorization_requests": false,
+    "pushed_authorization_request_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/ext/par/request",
+    "mtls_endpoint_aliases": {
+        "token_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/token",
+        "revocation_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/revoke",
+        "introspection_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/token/introspect",
+        "device_authorization_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/auth/device",
+        "registration_endpoint": "http://sso.gint.co.za:8080/realms/master/clients-registrations/openid-connect",
+        "userinfo_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/userinfo",
+        "pushed_authorization_request_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/ext/par/request",
+        "backchannel_authentication_endpoint": "http://sso.gint.co.za:8080/realms/master/protocol/openid-connect/ext/ciba/auth"
+    },
+    "authorization_response_iss_parameter_supported": true
+}
+
+--- Realm: gint ---
+{
+    "issuer": "http://sso.gint.co.za:8080/realms/gint",
+    "authorization_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/auth",
+    "token_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/token",
+    "introspection_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/token/introspect",
+    "userinfo_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/userinfo",
+    "end_session_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/logout",
+    "frontchannel_logout_session_supported": true,
+    "frontchannel_logout_supported": true,
+    "jwks_uri": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/certs",
+    "check_session_iframe": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/login-status-iframe.html",
+    "grant_types_supported": [
+        "authorization_code",
+        "client_credentials",
+        "implicit",
+        "password",
+        "refresh_token",
+        "urn:ietf:params:oauth:grant-type:device_code",
+        "urn:ietf:params:oauth:grant-type:token-exchange",
+        "urn:ietf:params:oauth:grant-type:uma-ticket",
+        "urn:openid:params:grant-type:ciba"
+    ],
+    "acr_values_supported": [
+        "0",
+        "1"
+    ],
+    "response_types_supported": [
+        "code",
+        "none",
+        "id_token",
+        "token",
+        "id_token token",
+        "code id_token",
+        "code token",
+        "code id_token token"
+    ],
+    "subject_types_supported": [
+        "public",
+        "pairwise"
+    ],
+    "prompt_values_supported": [
+        "none",
+        "login",
+        "consent"
+    ],
+    "id_token_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "id_token_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "id_token_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "userinfo_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512",
+        "none"
+    ],
+    "userinfo_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "userinfo_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "request_object_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512",
+        "none"
+    ],
+    "request_object_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "request_object_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "response_modes_supported": [
+        "query",
+        "fragment",
+        "form_post",
+        "query.jwt",
+        "fragment.jwt",
+        "form_post.jwt",
+        "jwt"
+    ],
+    "registration_endpoint": "http://sso.gint.co.za:8080/realms/gint/clients-registrations/openid-connect",
+    "token_endpoint_auth_methods_supported": [
+        "private_key_jwt",
+        "client_secret_basic",
+        "client_secret_post",
+        "tls_client_auth",
+        "client_secret_jwt"
+    ],
+    "token_endpoint_auth_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "introspection_endpoint_auth_methods_supported": [
+        "private_key_jwt",
+        "client_secret_basic",
+        "client_secret_post",
+        "tls_client_auth",
+        "client_secret_jwt"
+    ],
+    "introspection_endpoint_auth_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "authorization_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "authorization_encryption_alg_values_supported": [
+        "ECDH-ES+A256KW",
+        "ECDH-ES+A192KW",
+        "ECDH-ES+A128KW",
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "RSA1_5",
+        "ECDH-ES"
+    ],
+    "authorization_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+    ],
+    "claims_supported": [
+        "iss",
+        "sub",
+        "aud",
+        "exp",
+        "iat",
+        "auth_time",
+        "name",
+        "given_name",
+        "family_name",
+        "preferred_username",
+        "email",
+        "acr",
+        "azp",
+        "nonce"
+    ],
+    "claim_types_supported": [
+        "normal"
+    ],
+    "claims_parameter_supported": true,
+    "scopes_supported": [
+        "openid",
+        "profile",
+        "basic",
+        "service_account",
+        "organization",
+        "email",
+        "acr",
+        "phone",
+        "web-origins",
+        "roles",
+        "address",
+        "microprofile-jwt",
+        "offline_access"
+    ],
+    "request_parameter_supported": true,
+    "request_uri_parameter_supported": true,
+    "require_request_uri_registration": true,
+    "code_challenge_methods_supported": [
+        "plain",
+        "S256"
+    ],
+    "tls_client_certificate_bound_access_tokens": true,
+    "dpop_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "ES256",
+        "RS256",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "revocation_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/revoke",
+    "revocation_endpoint_auth_methods_supported": [
+        "private_key_jwt",
+        "client_secret_basic",
+        "client_secret_post",
+        "tls_client_auth",
+        "client_secret_jwt"
+    ],
+    "revocation_endpoint_auth_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "backchannel_logout_supported": true,
+    "backchannel_logout_session_supported": true,
+    "device_authorization_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/auth/device",
+    "backchannel_token_delivery_modes_supported": [
+        "poll",
+        "ping"
+    ],
+    "backchannel_authentication_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/ext/ciba/auth",
+    "backchannel_authentication_request_signing_alg_values_supported": [
+        "PS384",
+        "RS384",
+        "EdDSA",
+        "ES384",
+        "ES256",
+        "RS256",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+    ],
+    "require_pushed_authorization_requests": false,
+    "pushed_authorization_request_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/ext/par/request",
+    "mtls_endpoint_aliases": {
+        "token_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/token",
+        "revocation_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/revoke",
+        "introspection_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/token/introspect",
+        "device_authorization_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/auth/device",
+        "registration_endpoint": "http://sso.gint.co.za:8080/realms/gint/clients-registrations/openid-connect",
+        "userinfo_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/userinfo",
+        "pushed_authorization_request_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/ext/par/request",
+        "backchannel_authentication_endpoint": "http://sso.gint.co.za:8080/realms/gint/protocol/openid-connect/ext/ciba/auth"
+    },
+    "authorization_response_iss_parameter_supported": true
+}
+
+
+======== SSO DEEP DISCOVERY COMPLETE ========

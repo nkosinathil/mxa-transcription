@@ -1,0 +1,108 @@
+
+======== EXISTING APACHE VHOST ========
+--- gismartanalytics.com.conf ---
+<VirtualHost *:80>
+    ServerName gismartanalytics.com
+    ServerAlias www.gismartanalytics.com
+    ServerAdmin admin@gismartanalytics.com
+
+    DocumentRoot /var/www/gismartanalytics/public
+    DirectoryIndex index.php index.html
+
+    <Directory /var/www/gismartanalytics/public>
+        Options FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/gismartanalytics.com-error.log
+    CustomLog ${APACHE_LOG_DIR}/gismartanalytics.com-access.log combined
+
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+    ServerSignature Off
+
+    <FilesMatch \.php$>
+        SetHandler "proxy:unix:/run/php/php8.1-fpm.sock|fcgi://localhost/"
+    </FilesMatch>
+
+    <FilesMatch "^\.">
+        Require all denied
+    </FilesMatch>
+
+    <FilesMatch "(^\.env|composer\.json|composer\.lock|\.git)">
+        Require all denied
+    </FilesMatch>
+
+    Timeout 300
+</VirtualHost>
+
+======== EXISTING WEB APPLICATION ========
+--- /var/www/gismartanalytics structure ---
+/var/www/gismartanalytics/public/index.php
+/var/www/gismartanalytics/public/health.php
+
+--- composer.json ---
+
+--- .env or config ---
+
+======== PHP-FPM CONFIG ========
+--- Pool config ---
+[www]
+user = www-data
+group = www-data
+listen = /run/php/php8.1-fpm.sock
+listen.owner = www-data
+listen.group = www-data
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+--- php.ini upload limits ---
+max_execution_time => 0 => 0
+memory_limit => -1 => -1
+post_max_size => 8M => 8M
+upload_max_filesize => 2M => 2M
+
+======== PHP-FPM STATUS ========
+● php8.1-fpm.service - The PHP 8.1 FastCGI Process Manager
+     Loaded: loaded (/lib/systemd/system/php8.1-fpm.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2026-04-09 13:07:31 UTC; 18h ago
+       Docs: man:php-fpm8.1(8)
+    Process: 5681 ExecStartPost=/usr/lib/php/php-fpm-socket-helper install /run/php/php-fpm.sock /etc/php/8.1/fpm/pool.d/www.conf 81 (code=exited, status=0/SUCCESS)
+   Main PID: 5678 (php-fpm8.1)
+     Status: "Processes active: 0, idle: 2, Requests: 1817, slow: 0, Traffic: 0req/sec"
+      Tasks: 3 (limit: 9244)
+     Memory: 16.6M
+        CPU: 9.737s
+     CGroup: /system.slice/php8.1-fpm.service
+             ├─5678 "php-fpm: master process (/etc/php/8.1/fpm/php-fpm.conf)" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""
+             ├─5679 "php-fpm: pool www" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""
+             └─5680 "php-fpm: pool www" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""
+
+
+======== CONNECTIVITY TO PYTHON SERVER ========
+--- Can we reach Python API on 192.168.1.90:8000? ---
+HTTP 000Cannot reach Python API
+
+--- Via port 80 (nginx proxy)? ---
+HTTP 404
+
+======== CONNECTIVITY TO SSO SERVER ========
+--- Can we reach Keycloak on 192.168.1.59? ---
+HTTP 200
+
+======== AVAILABLE DISK FOR POSTGRESQL ========
+--- If we install PostgreSQL here ---
+/dev/mapper/ubuntu--vg-ubuntu--lv   98G  7.6G   86G   9% /
+
+--- Memory available ---
+               total        used        free      shared  buff/cache   available
+Mem:           7.6Gi       279Mi       6.2Gi        22Mi       1.2Gi       7.1Gi
+
+======== APP SERVER DEEP DISCOVERY COMPLETE ========

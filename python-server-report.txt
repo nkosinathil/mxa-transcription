@@ -1,0 +1,411 @@
+
+======== OS & KERNEL ========
+PRETTY_NAME="Ubuntu 22.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.5 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+Linux pyserver 5.15.0-174-generic #184-Ubuntu SMP Fri Mar 13 18:41:50 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+ Static hostname: pyserver
+       Icon name: computer-desktop
+         Chassis: desktop
+      Machine ID: 23bed04632dc4e1a8204322a734c876b
+         Boot ID: b052376640224d3aac574316355ebf19
+Operating System: Ubuntu 22.04.5 LTS
+          Kernel: Linux 5.15.0-174-generic
+    Architecture: x86-64
+ Hardware Vendor: Micro-Star International Co., Ltd.
+  Hardware Model: MS-7C09
+
+======== HOSTNAME & IP ========
+pyserver
+    inet 127.0.0.1/8 scope host lo
+    inet 192.168.1.90/24 metric 100 brd 192.168.1.255 scope global dynamic enp1s0
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+
+======== DISK & MEMORY ========
+Filesystem                         Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-ubuntu--lv  877G   14G  827G   2% /
+               total        used        free      shared  buff/cache   available
+Mem:            31Gi       928Mi        27Gi       1.0Mi       3.0Gi        29Gi
+Swap:          8.0Gi          0B       8.0Gi
+
+======== USERS & GROUPS ========
+--- System users with shells ---
+root:x:0:0:root:/root:/bin/bash
+sync:x:4:65534:sync:/bin:/bin/sync
+pyminio:x:1000:1000:pyserver:/home/pyminio:/bin/bash
+
+--- All groups ---
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:syslog,pyminio
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:pyminio
+floppy:x:25:
+tape:x:26:
+sudo:x:27:pyminio
+audio:x:29:
+dip:x:30:pyminio
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+gnats:x:41:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:pyminio
+staff:x:50:
+games:x:60:
+users:x:100:pyminio
+nogroup:x:65534:
+systemd-journal:x:101:
+systemd-network:x:102:
+systemd-resolve:x:103:
+messagebus:x:104:
+systemd-timesync:x:105:
+input:x:106:
+sgx:x:107:
+kvm:x:108:
+render:x:109:
+lxd:x:110:
+_ssh:x:111:
+crontab:x:112:
+syslog:x:113:
+uuidd:x:114:
+tcpdump:x:115:
+tss:x:116:
+landscape:x:117:
+fwupd-refresh:x:118:
+pyminio:x:1000:
+redis:x:119:
+docker:x:999:pyminio
+
+======== PYTHON ========
+Python 3.10.12
+pip 22.0.2 from /usr/lib/python3/dist-packages/pip (python 3.10)
+/usr/bin/python3
+--- Installed pip packages ---
+Package               Version
+--------------------- ----------------
+asgiref               3.5.0
+attrs                 21.2.0
+Automat               20.2.0
+Babel                 2.8.0
+bcrypt                3.2.0
+blinker               1.4
+certifi               2020.6.20
+chardet               4.0.0
+click                 8.0.3
+cloud-init            25.3
+colorama              0.4.4
+command-not-found     0.3
+configobj             5.0.6
+constantly            15.1.0
+cryptography          3.4.8
+dbus-python           1.2.18
+distro                1.7.0
+distro-info           1.1+ubuntu0.2
+h11                   0.13.0
+httplib2              0.20.2
+hyperlink             21.0.0
+idna                  3.3
+importlib-metadata    4.6.4
+incremental           21.3.0
+jeepney               0.7.1
+Jinja2                3.0.3
+jsonpatch             1.32
+jsonpointer           2.0
+jsonschema            3.2.0
+keyring               23.5.0
+launchpadlib          1.10.16
+lazr.restfulclient    0.14.4
+lazr.uri              1.0.6
+MarkupSafe            2.0.1
+more-itertools        8.10.0
+netifaces             0.11.0
+oauthlib              3.2.0
+packaging             21.3
+pexpect               4.8.0
+pip                   22.0.2
+ptyprocess            0.7.0
+pyasn1                0.4.8
+pyasn1-modules        0.2.1
+PyGObject             3.42.1
+PyHamcrest            2.0.2
+PyJWT                 2.3.0
+pyOpenSSL             21.0.0
+pyparsing             2.4.7
+pyrsistent            0.18.1
+pyserial              3.5
+python-apt            2.4.0+ubuntu4.1
+python-debian         0.1.43+ubuntu1.1
+python-magic          0.4.24
+pytz                  2022.1
+PyYAML                5.4.1
+requests              2.25.1
+SecretStorage         3.3.1
+service-identity      18.1.0
+setuptools            59.6.0
+six                   1.16.0
+sos                   4.10.2
+ssh-import-id         5.11
+systemd-python        234
+Twisted               22.1.0
+ubuntu-drivers-common 0.0.0
+ubuntu-pro-client     8001
+ufw                   0.36.1
+unattended-upgrades   0.1
+urllib3               1.26.5
+uvicorn               0.15.0
+wadllib               1.3.6
+wheel                 0.37.1
+wsproto               1.0.0
+xkit                  0.0.0
+zipp                  1.0.0
+zope.interface        5.4.0
+
+======== VIRTUAL ENVS ========
+
+======== TESSERACT ========
+tesseract 4.1.1
+ leptonica-1.82.0
+  libgif 5.1.9 : libjpeg 8d (libjpeg-turbo 2.1.1) : libpng 1.6.37 : libtiff 4.3.0 : zlib 1.2.11 : libwebp 1.2.2 : libopenjp2 2.4.0
+ Found AVX2
+ Found AVX
+ Found FMA
+ Found SSE
+ Found libarchive 3.6.0 zlib/1.2.11 liblzma/5.2.5 bz2lib/1.0.8 liblz4/1.9.3 libzstd/1.4.8
+List of available languages (6):
+afr
+deu
+eng
+fra
+osd
+spa
+
+======== POPPLER (pdf2image) ========
+pdftotext version 22.02.0
+Copyright 2005-2022 The Poppler Developers - http://poppler.freedesktop.org
+
+======== REDIS ========
+Redis server v=6.0.16 sha=00000000:0 malloc=jemalloc-5.2.1 bits=64 build=e91d7986ac6d5bb6
+PONG
+# Server
+redis_version:6.0.16
+redis_git_sha1:00000000
+redis_git_dirty:0
+redis_build_id:e91d7986ac6d5bb6
+redis_mode:standalone
+os:Linux 5.15.0-174-generic x86_64
+arch_bits:64
+multiplexing_api:epoll
+atomicvar_api:atomic-builtin
+gcc_version:11.4.0
+process_id:19191
+run_id:26798fcc22149ecb6c515cc41bc003cdd53a0b3a
+tcp_port:6379
+uptime_in_seconds:75863
+● redis-server.service - Advanced key-value store
+     Loaded: loaded (/lib/systemd/system/redis-server.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2026-04-09 11:00:58 UTC; 21h ago
+       Docs: http://redis.io/documentation,
+             man:redis-server(1)
+   Main PID: 19191 (redis-server)
+     Status: "Ready to accept connections"
+      Tasks: 5 (limit: 38213)
+     Memory: 2.9M
+        CPU: 2min 41.188s
+
+======== MINIO ========
+MinIO binary not found in PATH
+/var/lib/docker/rootfs/overlayfs/971cbe794ca96678fcfcbff27641c01dfb2170658dc9664beb82892d6649b024/usr/bin/minio
+/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/4/fs/usr/bin/minio
+--- MinIO processes ---
+pyminio     1399  0.0  0.0  17196  9968 ?        Ss   Apr02   0:00 /lib/systemd/systemd --user
+pyminio     1400  0.0  0.0 169480  3936 ?        S    Apr02   0:00 (sd-pam)
+pyminio     1406  0.0  0.0   8744  5508 tty1     S+   Apr02   0:00 -bash
+root        4843  0.1  0.4 1535496 139500 ?      Ssl  Apr02  13:33 minio server /data --console-address :9001
+pyminio    19197  0.0  0.0 110916 28024 ?        Ssl  Apr09   0:11 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/gunicorn -w 2 -k uvicorn_worker.UvicornWorker -b 127.0.0.1:8000 main:app
+pyminio    19198  0.2  0.1  59968 51440 ?        Ss   Apr09   2:52 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19217  0.1  0.1  69644 56288 ?        Sl   Apr09   1:40 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/gunicorn -w 2 -k uvicorn_worker.UvicornWorker -b 127.0.0.1:8000 main:app
+pyminio    19219  0.1  0.1  69648 56292 ?        Sl   Apr09   1:40 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/gunicorn -w 2 -k uvicorn_worker.UvicornWorker -b 127.0.0.1:8000 main:app
+pyminio    19222  0.0  0.1  58416 42892 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19223  0.0  0.1  58420 42832 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19224  0.0  0.1  58424 42844 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19226  0.0  0.1  58428 42844 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19227  0.0  0.1  58432 42848 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19228  0.0  0.1  58436 42852 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19230  0.0  0.1  58440 42856 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19231  0.0  0.1  58444 42860 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    28174  0.0  0.0 110988 27992 ?        Ssl  Apr09   0:09 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/gunicorn -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8001 app.main:app
+pyminio    28176  0.1  0.2 109156 71396 ?        Sl   Apr09   1:23 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/gunicorn -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8001 app.main:app
+pyminio    28177  0.1  0.2 109124 71388 ?        Sl   Apr09   1:23 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/gunicorn -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8001 app.main:app
+pyminio    28334  0.2  0.2 105304 65628 ?        Ss   Apr09   2:08 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/celery -A app.tasks.celery_app:celery_app worker -l info -Q ocr,default -c 2
+pyminio    28337  0.0  0.1 103940 50172 ?        S    Apr09   0:00 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/celery -A app.tasks.celery_app:celery_app worker -l info -Q ocr,default -c 2
+pyminio    28338  0.0  0.1 103944 50116 ?        S    Apr09   0:00 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/celery -A app.tasks.celery_app:celery_app worker -l info -Q ocr,default -c 2
+root       29728  0.0  0.0  17188 10992 ?        Ss   08:04   0:00 sshd: pyminio [priv]
+pyminio    29827  0.0  0.0  17592  8364 ?        S    08:04   0:00 sshd: pyminio@pts/0
+pyminio    29829  0.0  0.0   8736  5468 pts/0    Ss   08:04   0:00 -bash
+--- MinIO data dirs ---
+No standard MinIO data dir found
+
+======== CELERY ========
+Celery not installed (globally)
+--- Celery processes ---
+pyminio    19198  0.2  0.1  59968 51440 ?        Ss   Apr09   2:52 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19222  0.0  0.1  58416 42892 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19223  0.0  0.1  58420 42832 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19224  0.0  0.1  58424 42844 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19226  0.0  0.1  58428 42844 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19227  0.0  0.1  58432 42848 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19228  0.0  0.1  58436 42852 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19230  0.0  0.1  58440 42856 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    19231  0.0  0.1  58444 42860 ?        S    Apr09   0:00 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/celery -A celery_app.celery worker --loglevel=info
+pyminio    28334  0.2  0.2 105304 65628 ?        Ss   Apr09   2:08 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/celery -A app.tasks.celery_app:celery_app worker -l info -Q ocr,default -c 2
+pyminio    28337  0.0  0.1 103940 50172 ?        S    Apr09   0:00 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/celery -A app.tasks.celery_app:celery_app worker -l info -Q ocr,default -c 2
+pyminio    28338  0.0  0.1 103944 50116 ?        S    Apr09   0:00 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/celery -A app.tasks.celery_app:celery_app worker -l info -Q ocr,default -c 2
+
+======== FASTAPI / UVICORN ========
+--- Uvicorn processes ---
+pyminio    19197  0.0  0.0 110916 28024 ?        Ssl  Apr09   0:11 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/gunicorn -w 2 -k uvicorn_worker.UvicornWorker -b 127.0.0.1:8000 main:app
+pyminio    19217  0.1  0.1  69644 56288 ?        Sl   Apr09   1:40 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/gunicorn -w 2 -k uvicorn_worker.UvicornWorker -b 127.0.0.1:8000 main:app
+pyminio    19219  0.1  0.1  69648 56292 ?        Sl   Apr09   1:40 /opt/mxa/api/venv/bin/python3 /opt/mxa/api/venv/bin/gunicorn -w 2 -k uvicorn_worker.UvicornWorker -b 127.0.0.1:8000 main:app
+pyminio    28174  0.0  0.0 110988 27992 ?        Ssl  Apr09   0:09 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/gunicorn -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8001 app.main:app
+pyminio    28176  0.1  0.2 109156 71396 ?        Sl   Apr09   1:23 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/gunicorn -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8001 app.main:app
+pyminio    28177  0.1  0.2 109124 71388 ?        Sl   Apr09   1:23 /opt/ocr/python-backend/venv/bin/python3 /opt/ocr/python-backend/venv/bin/gunicorn -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8001 app.main:app
+--- Port 8000 ---
+LISTEN 0      2048       127.0.0.1:8000      0.0.0.0:*    users:(("gunicorn",pid=19219,fd=3),("gunicorn",pid=19217,fd=3),("gunicorn",pid=19197,fd=3))                                                                                                                                             
+
+======== DOCKER ========
+Docker version 29.3.1, build c2be9cc
+CONTAINER ID   IMAGE         COMMAND                  CREATED      STATUS      PORTS                                                             NAMES
+971cbe794ca9   minio/minio   "/usr/bin/docker-ent…"   7 days ago   Up 7 days   0.0.0.0:9000-9001->9000-9001/tcp, [::]:9000-9001->9000-9001/tcp   mxa-minio
+
+======== EXISTING APPLICATIONS ========
+--- /opt contents ---
+total 20
+drwxr-xr-x  5 root    root    4096 Apr  9 11:00 .
+drwxr-xr-x 20 root    root    4096 Apr  2 15:47 ..
+drwx--x--x  4 root    root    4096 Apr  2 11:41 containerd
+drwxr-xr-x  4 pyminio pyminio 4096 Apr  2 11:42 mxa
+drwxr-xr-x  8 pyminio pyminio 4096 Apr  9 11:01 ocr
+--- /srv contents ---
+total 8
+drwxr-xr-x  2 root root 4096 Sep 11  2024 .
+drwxr-xr-x 20 root root 4096 Apr  2 15:47 ..
+--- Home directories ---
+total 12
+drwxr-xr-x  3 root    root    4096 Apr  2 10:10 .
+drwxr-xr-x 20 root    root    4096 Apr  2 15:47 ..
+drwxr-x---  6 pyminio pyminio 4096 Apr  9 07:42 pyminio
+
+======== FIREWALL ========
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp (OpenSSH)           ALLOW IN    Anywhere                  
+8000/tcp                   ALLOW IN    Anywhere                  
+80/tcp                     ALLOW IN    Anywhere                  
+8001/tcp                   ALLOW IN    Anywhere                  
+22/tcp (OpenSSH (v6))      ALLOW IN    Anywhere (v6)             
+8000/tcp (v6)              ALLOW IN    Anywhere (v6)             
+80/tcp (v6)                ALLOW IN    Anywhere (v6)             
+8001/tcp (v6)              ALLOW IN    Anywhere (v6)             
+
+
+======== LISTENING PORTS ========
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                                                                                                                                                                                                                  
+LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*    users:(("systemd-resolve",pid=19184,fd=14))                                                                                                                                                                                             
+LISTEN 0      2048       127.0.0.1:8000      0.0.0.0:*    users:(("gunicorn",pid=19219,fd=3),("gunicorn",pid=19217,fd=3),("gunicorn",pid=19197,fd=3))                                                                                                                                             
+LISTEN 0      511        127.0.0.1:6379      0.0.0.0:*    users:(("redis-server",pid=19191,fd=6))                                                                                                                                                                                                 
+LISTEN 0      4096         0.0.0.0:9000      0.0.0.0:*    users:(("docker-proxy",pid=4882,fd=8))                                                                                                                                                                                                  
+LISTEN 0      4096         0.0.0.0:9001      0.0.0.0:*    users:(("docker-proxy",pid=4904,fd=8))                                                                                                                                                                                                  
+LISTEN 0      2048         0.0.0.0:8001      0.0.0.0:*    users:(("gunicorn",pid=28177,fd=3),("gunicorn",pid=28176,fd=3),("gunicorn",pid=28174,fd=3))                                                                                                                                             
+LISTEN 0      511          0.0.0.0:80        0.0.0.0:*    users:(("nginx",pid=27465,fd=6),("nginx",pid=27464,fd=6),("nginx",pid=27463,fd=6),("nginx",pid=27462,fd=6),("nginx",pid=27461,fd=6),("nginx",pid=27460,fd=6),("nginx",pid=27459,fd=6),("nginx",pid=27457,fd=6),("nginx",pid=19144,fd=6))
+LISTEN 0      128          0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=19127,fd=3))                                                                                                                                                                                                         
+LISTEN 0      511            [::1]:6379         [::]:*    users:(("redis-server",pid=19191,fd=7))                                                                                                                                                                                                 
+LISTEN 0      4096            [::]:9000         [::]:*    users:(("docker-proxy",pid=4888,fd=8))                                                                                                                                                                                                  
+LISTEN 0      4096            [::]:9001         [::]:*    users:(("docker-proxy",pid=4911,fd=8))                                                                                                                                                                                                  
+LISTEN 0      511             [::]:80           [::]:*    users:(("nginx",pid=27465,fd=7),("nginx",pid=27464,fd=7),("nginx",pid=27463,fd=7),("nginx",pid=27462,fd=7),("nginx",pid=27461,fd=7),("nginx",pid=27460,fd=7),("nginx",pid=27459,fd=7),("nginx",pid=27457,fd=7),("nginx",pid=19144,fd=7))
+LISTEN 0      128             [::]:22           [::]:*    users:(("sshd",pid=19127,fd=4))                                                                                                                                                                                                         
+
+======== SYSTEMD SERVICES (running) ========
+  UNIT                        LOAD   ACTIVE SUB     DESCRIPTION
+  containerd.service          loaded active running containerd container runtime
+  cron.service                loaded active running Regular background program processing daemon
+  dbus.service                loaded active running D-Bus System Message Bus
+  docker.service              loaded active running Docker Application Container Engine
+  getty@tty1.service          loaded active running Getty on tty1
+  irqbalance.service          loaded active running irqbalance daemon
+  ModemManager.service        loaded active running Modem Manager
+  multipathd.service          loaded active running Device-Mapper Multipath Device Controller
+  mxa-api.service             loaded active running MxA FastAPI Python Server
+  mxa-celery.service          loaded active running MxA Celery Worker
+  networkd-dispatcher.service loaded active running Dispatcher daemon for systemd-networkd
+  nginx.service               loaded active running A high performance web server and a reverse proxy server
+  ocr-api.service             loaded active running OCR Platform FastAPI Server (port 8001)
+  ocr-celery.service          loaded active running OCR Platform Celery Worker
+  packagekit.service          loaded active running PackageKit Daemon
+  polkit.service              loaded active running Authorization Manager
+  redis-server.service        loaded active running Advanced key-value store
+  rsyslog.service             loaded active running System Logging Service
+  snapd.service               loaded active running Snap Daemon
+  ssh.service                 loaded active running OpenBSD Secure Shell server
+  systemd-hostnamed.service   loaded active running Hostname Service
+  systemd-journald.service    loaded active running Journal Service
+  systemd-logind.service      loaded active running User Login Management
+  systemd-networkd.service    loaded active running Network Configuration
+  systemd-resolved.service    loaded active running Network Name Resolution
+  systemd-timesyncd.service   loaded active running Network Time Synchronization
+  systemd-udevd.service       loaded active running Rule-based Manager for Device Events and Files
+  thermald.service            loaded active running Thermal Daemon Service
+  udisks2.service             loaded active running Disk Manager
+  unattended-upgrades.service loaded active running Unattended Upgrades Shutdown
+  upower.service              loaded active running Daemon for power management
+  user@1000.service           loaded active running User Manager for UID 1000
+  uuidd.service               loaded active running Daemon for generating UUIDs
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+33 loaded units listed.
+
+======== ENV VARS (non-sensitive) ========
+SHELL=/bin/bash
+SUDO_COMMAND=/usr/bin/bash /tmp/ocr-discovery/scripts/discover-python-server.sh
+SUDO_USER=pyminio
+HOME=/root
+LANG=en_US.UTF-8
+USER=root
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+
+======== DISCOVERY COMPLETE (192.168.1.90) ========

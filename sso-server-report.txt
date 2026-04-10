@@ -1,0 +1,336 @@
+
+======== OS & KERNEL ========
+PRETTY_NAME="Ubuntu 22.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.5 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+Linux gisso 5.15.0-174-generic #184-Ubuntu SMP Fri Mar 13 18:41:50 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+ Static hostname: gisso
+       Icon name: computer-desktop
+         Chassis: desktop
+      Machine ID: 3598c23ce70142e793b414d979cd497e
+         Boot ID: 5c5321bd48e14c09b8c36a64237367f2
+Operating System: Ubuntu 22.04.5 LTS
+          Kernel: Linux 5.15.0-174-generic
+    Architecture: x86-64
+ Hardware Vendor: Dell Inc.
+  Hardware Model: OptiPlex 5040
+
+======== HOSTNAME & IP ========
+gisso
+    inet 127.0.0.1/8 scope host lo
+    inet 192.168.1.59/24 metric 100 brd 192.168.1.255 scope global dynamic enp0s31f6
+
+======== DISK & MEMORY ========
+Filesystem                         Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-ubuntu--lv   98G  8.3G   85G   9% /
+               total        used        free      shared  buff/cache   available
+Mem:           7.6Gi       943Mi       5.5Gi        18Mi       1.2Gi       6.4Gi
+Swap:          4.0Gi          0B       4.0Gi
+
+======== USERS & GROUPS (system) ========
+--- System users with shells ---
+root:x:0:0:root:/root:/bin/bash
+sync:x:4:65534:sync:/bin:/bin/sync
+ssoadmin:x:1000:1000:gi:/home/ssoadmin:/bin/bash
+postgres:x:114:120:PostgreSQL administrator,,,:/var/lib/postgresql:/bin/bash
+
+--- All groups ---
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:syslog,ssoadmin
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:ssoadmin
+floppy:x:25:
+tape:x:26:
+sudo:x:27:ssoadmin
+audio:x:29:
+dip:x:30:ssoadmin
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+gnats:x:41:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:ssoadmin
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+systemd-journal:x:101:
+systemd-network:x:102:
+systemd-resolve:x:103:
+messagebus:x:104:
+systemd-timesync:x:105:
+input:x:106:
+sgx:x:107:
+kvm:x:108:
+render:x:109:
+lxd:x:110:ssoadmin
+_ssh:x:111:
+crontab:x:112:
+syslog:x:113:
+uuidd:x:114:
+tcpdump:x:115:
+tss:x:116:
+landscape:x:117:
+fwupd-refresh:x:118:
+ssoadmin:x:1000:
+ssl-cert:x:119:postgres
+postgres:x:120:
+keycloak:x:999:
+
+======== SSO PLATFORM DETECTION ========
+--- Checking for Keycloak ---
+/sys/fs/cgroup/system.slice/keycloak.service
+/home/keycloak
+/opt/keycloak
+keycloak    1087  0.0  0.0   2892  1848 ?        Ss   Apr07   0:00 /bin/sh /opt/keycloak/bin/kc.sh start
+keycloak    1161  0.4  8.6 5577756 695780 ?      Sl   Apr07  18:57 java -Djava.util.concurrent.ForkJoinPool.common.threadFactory=io.quarkus.bootstrap.forkjoin.QuarkusForkJoinWorkerThreadFactory -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.err.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -XX:+UseG1GC -XX:FlightRecorderOptions=stackdepth=512 -Djdk.tls.rejectClientInitiatedRenegotiation=true -Xms64m -Xmx512m --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.security=ALL-UNNAMED -Duser.language=en -Duser.country=US -Dkc.home.dir=/opt/keycloak/bin/.. -Djboss.server.config.dir=/opt/keycloak/bin/../conf -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dpicocli.disable.closures=true -Dquarkus-log-max-startup-records=10000 -cp /opt/keycloak/bin/../lib/quarkus-run.jar io.quarkus.bootstrap.runner.QuarkusEntryPoint start
+postgres    1233  0.0  0.3 222480 26804 ?        Ss   Apr07   0:05 postgres: 14/main: gikeycloak keycloak 127.0.0.1(41008) idle
+postgres    1238  0.0  0.2 220612 22896 ?        Ss   Apr07   0:09 postgres: 14/main: gikeycloak keycloak 127.0.0.1(41018) idle
+No Keycloak container
+--- Checking for Authentik ---
+No Authentik container
+--- Checking for FreeIPA ---
+FreeIPA CLI not found
+--- Checking for OpenLDAP / LDAP ---
+slapd not found
+LDAP not responding on localhost
+--- Checking for Authelia ---
+--- Checking for Dex / OAuth2-Proxy ---
+--- Checking for custom PHP/Node SSO ---
+total 12
+drwxr-xr-x  3 root root 4096 Apr  6 10:39 .
+drwxr-xr-x 14 root root 4096 Apr  6 10:39 ..
+drwxr-xr-x  2 root root 4096 Apr  6 10:39 html
+total 12
+drwxr-xr-x 2 root root 4096 Apr  6 10:39 .
+drwxr-xr-x 3 root root 4096 Apr  6 10:39 ..
+-rw-r--r-- 1 root root  612 Apr  6 10:39 index.nginx-debian.html
+
+======== WEB SERVER ========
+Apache not found
+--- Enabled sites ---
+total 8
+drwxr-xr-x 2 root root 4096 Apr  6 11:01 .
+drwxr-xr-x 8 root root 4096 Apr  6 10:39 ..
+lrwxrwxrwx 1 root root   35 Apr  6 11:01 keycloak -> /etc/nginx/sites-available/keycloak
+
+======== DOCKER ========
+Docker not installed
+--- All containers ---
+--- Docker compose files ---
+/tmp/ocr-discovery/docker-compose.yml
+/tmp/ocr-deploy/docker-compose.yml
+
+======== DATABASES ========
+--- PostgreSQL ---
+psql (PostgreSQL) 14.22 (Ubuntu 14.22-0ubuntu0.22.04.1)
+● postgresql.service - PostgreSQL RDBMS
+     Loaded: loaded (/lib/systemd/system/postgresql.service; enabled; vendor preset: enabled)
+     Active: active (exited) since Tue 2026-04-07 08:38:51 UTC; 2 days ago
+    Process: 1086 ExecStart=/bin/true (code=exited, status=0/SUCCESS)
+   Main PID: 1086 (code=exited, status=0/SUCCESS)
+        CPU: 1ms
+
+Apr 07 08:38:51 gisso systemd[1]: Starting PostgreSQL RDBMS...
+Apr 07 08:38:51 gisso systemd[1]: Finished PostgreSQL RDBMS.
+                                     List of databases
+   Name    |   Owner    | Encoding |   Collate   |    Ctype    |     Access privileges     
+-----------+------------+----------+-------------+-------------+---------------------------
+ keycloak  | gikeycloak | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =Tc/gikeycloak           +
+           |            |          |             |             | gikeycloak=CTc/gikeycloak
+ postgres  | postgres   | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+ template0 | postgres   | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres              +
+           |            |          |             |             | postgres=CTc/postgres
+ template1 | postgres   | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres              +
+           |            |          |             |             | postgres=CTc/postgres
+(4 rows)
+
+                                    List of roles
+ Role name  |                         Attributes                         | Member of 
+------------+------------------------------------------------------------+-----------
+ gikeycloak |                                                            | {}
+ postgres   | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+
+--- MySQL/MariaDB ---
+mysql not installed
+--- SQLite databases ---
+/var/cache/snapd/commands.db
+/var/cache/man/ro/index.db
+/var/cache/man/pt_BR/index.db
+/var/cache/man/zh_CN/index.db
+/var/cache/man/tr/index.db
+/var/cache/man/de/index.db
+/var/cache/man/ru/index.db
+/var/cache/man/index.db
+/var/cache/man/pt/index.db
+/var/cache/man/uk/index.db
+
+======== SSO CONFIGURATION FILES ========
+--- Keycloak config ---
+/opt/keycloak/conf/keycloak.conf
+--- Any OIDC/OAuth config ---
+/etc/fail2ban/filter.d/nagios.conf
+/etc/fail2ban/filter.d/apache-auth.conf
+/etc/fail2ban/filter.d/gitlab.conf
+/etc/fail2ban/filter.d/grafana.conf
+/etc/fail2ban/filter.d/centreon.conf
+/etc/fail2ban/filter.d/softethervpn.conf
+/etc/fail2ban/filter.d/proftpd.conf
+
+======== SSL / CERTIFICATES ========
+-rw-r--r-- 1 root root 1074 Apr  6 10:39 /etc/ssl/certs/ssl-cert-snakeoil.pem
+/etc/postgresql-common/root.crt
+/etc/pki/fwupd-metadata/LVFS-CA.pem
+/etc/pki/fwupd/LVFS-CA.pem
+/etc/ssl/private/ssl-cert-snakeoil.key
+/etc/ssl/certs/emSign_Root_CA_-_G1.pem
+/etc/ssl/certs/Atos_TrustedRoot_Root_CA_RSA_TLS_2021.pem
+/etc/ssl/certs/Security_Communication_RootCA2.pem
+/etc/ssl/certs/GlobalSign_ECC_Root_CA_-_R5.pem
+/etc/ssl/certs/Trustwave_Global_Certification_Authority.pem
+/etc/ssl/certs/CA_Disig_Root_R2.pem
+/etc/ssl/certs/Entrust.net_Premium_2048_Secure_Server_CA.pem
+/etc/ssl/certs/GlobalSign_Root_CA.pem
+/etc/ssl/certs/Microsoft_RSA_Root_Certificate_Authority_2017.pem
+/etc/ssl/certs/Hellenic_Academic_and_Research_Institutions_RootCA_2015.pem
+/etc/ssl/certs/TeliaSonera_Root_CA_v1.pem
+certbot not installed / no certs
+
+======== LISTENING PORTS ========
+State  Recv-Q Send-Q      Local Address:Port  Peer Address:PortProcess                                                                                                                                                                                                                
+LISTEN 0      128               0.0.0.0:22         0.0.0.0:*    users:(("sshd",pid=866,fd=3))                                                                                                                                                                                         
+LISTEN 0      511               0.0.0.0:80         0.0.0.0:*    users:(("nginx",pid=885,fd=6),("nginx",pid=884,fd=6),("nginx",pid=883,fd=6),("nginx",pid=882,fd=6),("nginx",pid=881,fd=6),("nginx",pid=879,fd=6),("nginx",pid=878,fd=6),("nginx",pid=877,fd=6),("nginx",pid=876,fd=6))
+LISTEN 0      244             127.0.0.1:5432       0.0.0.0:*    users:(("postgres",pid=892,fd=5))                                                                                                                                                                                     
+LISTEN 0      4096        127.0.0.53%lo:53         0.0.0.0:*    users:(("systemd-resolve",pid=774,fd=14))                                                                                                                                                                             
+LISTEN 0      50     [::ffff:127.0.0.1]:35853            *:*    users:(("java",pid=1161,fd=188))                                                                                                                                                                                      
+LISTEN 0      50     [::ffff:127.0.0.1]:7800             *:*    users:(("java",pid=1161,fd=371))                                                                                                                                                                                      
+LISTEN 0      50                      *:57800            *:*    users:(("java",pid=1161,fd=372))                                                                                                                                                                                      
+LISTEN 0      128                  [::]:22            [::]:*    users:(("sshd",pid=866,fd=4))                                                                                                                                                                                         
+LISTEN 0      4096                    *:9000             *:*    users:(("java",pid=1161,fd=378))                                                                                                                                                                                      
+LISTEN 0      4096                    *:8080             *:*    users:(("java",pid=1161,fd=377))                                                                                                                                                                                      
+
+======== SYSTEMD SERVICES (running) ========
+  UNIT                        LOAD   ACTIVE SUB     DESCRIPTION
+  cron.service                loaded active running Regular background program processing daemon
+  dbus.service                loaded active running D-Bus System Message Bus
+  fwupd.service               loaded active running Firmware update daemon
+  getty@tty1.service          loaded active running Getty on tty1
+  irqbalance.service          loaded active running irqbalance daemon
+  keycloak.service            loaded active running Keycloak Identity Server
+  ModemManager.service        loaded active running Modem Manager
+  multipathd.service          loaded active running Device-Mapper Multipath Device Controller
+  networkd-dispatcher.service loaded active running Dispatcher daemon for systemd-networkd
+  nginx.service               loaded active running A high performance web server and a reverse proxy server
+  packagekit.service          loaded active running PackageKit Daemon
+  polkit.service              loaded active running Authorization Manager
+  postgresql@14-main.service  loaded active running PostgreSQL Cluster 14-main
+  rsyslog.service             loaded active running System Logging Service
+  snapd.service               loaded active running Snap Daemon
+  ssh.service                 loaded active running OpenBSD Secure Shell server
+  systemd-hostnamed.service   loaded active running Hostname Service
+  systemd-journald.service    loaded active running Journal Service
+  systemd-logind.service      loaded active running User Login Management
+  systemd-networkd.service    loaded active running Network Configuration
+  systemd-resolved.service    loaded active running Network Name Resolution
+  systemd-timesyncd.service   loaded active running Network Time Synchronization
+  systemd-udevd.service       loaded active running Rule-based Manager for Device Events and Files
+  thermald.service            loaded active running Thermal Daemon Service
+  udisks2.service             loaded active running Disk Manager
+  unattended-upgrades.service loaded active running Unattended Upgrades Shutdown
+  upower.service              loaded active running Daemon for power management
+  user@1000.service           loaded active running User Manager for UID 1000
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+28 loaded units listed.
+
+======== FIREWALL ========
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp (OpenSSH)           ALLOW IN    Anywhere                  
+80,443/tcp (Nginx Full)    ALLOW IN    Anywhere                  
+22/tcp (OpenSSH (v6))      ALLOW IN    Anywhere (v6)             
+80,443/tcp (Nginx Full (v6)) ALLOW IN    Anywhere (v6)             
+
+
+======== JAVA (for Keycloak/other JVM SSO) ========
+openjdk version "21.0.10" 2026-01-20
+OpenJDK Runtime Environment (build 21.0.10+7-Ubuntu-122.04)
+OpenJDK 64-Bit Server VM (build 21.0.10+7-Ubuntu-122.04, mixed mode, sharing)
+
+======== NODE.JS (for JS-based SSO) ========
+Node.js not installed
+
+======== PYTHON (for Python-based SSO) ========
+Python 3.10.12
+
+======== RECENT LOGS (auth-related) ========
+Apr 09 14:28:46 gisso kc.sh[1161]: 2026-04-09 14:28:46,134 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-7) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 14:28:48 gisso kc.sh[1161]: 2026-04-09 14:28:48,968 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-12) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 14:37:55 gisso kc.sh[1161]: 2026-04-09 14:37:55,624 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-12) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 14:38:04 gisso kc.sh[1161]: 2026-04-09 14:38:04,252 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-15) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 14:46:36 gisso kc.sh[1161]: 2026-04-09 14:46:36,893 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-15) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 14:46:39 gisso kc.sh[1161]: 2026-04-09 14:46:39,860 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-17) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 14:52:04 gisso kc.sh[1161]: 2026-04-09 14:52:04,045 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-17) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 14:52:07 gisso kc.sh[1161]: 2026-04-09 14:52:07,697 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-20) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 14:56:47 gisso kc.sh[1161]: 2026-04-09 14:56:47,355 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-20) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 14:56:49 gisso kc.sh[1161]: 2026-04-09 14:56:49,931 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-24) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 15:27:57 gisso kc.sh[1161]: 2026-04-09 15:27:57,243 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-24) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 15:37:05 gisso kc.sh[1161]: 2026-04-09 15:37:05,975 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-27) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 15:37:19 gisso kc.sh[1161]: 2026-04-09 15:37:19,782 WARN  [org.keycloak.events] (executor-thread-27) type="CLIENT_LOGIN_ERROR", realmId="ad6b1e6e-52d6-4c33-8e99-c426f77b5dce", realmName="master", clientId="gint-ocr-platform", userId="null", ipAddress="192.168.1.66", error="client_not_found", grant_type="client_credentials"
+Apr 09 15:37:47 gisso kc.sh[1161]: 2026-04-09 15:37:47,176 WARN  [org.keycloak.events] (executor-thread-27) type="CLIENT_LOGIN_ERROR", realmId="ad6b1e6e-52d6-4c33-8e99-c426f77b5dce", realmName="master", clientId="gint-ocr-platform", userId="null", ipAddress="192.168.1.66", error="client_not_found", grant_type="client_credentials"
+Apr 09 15:37:54 gisso kc.sh[1161]: 2026-04-09 15:37:54,501 WARN  [org.keycloak.events] (executor-thread-27) type="CLIENT_LOGIN_ERROR", realmId="ad6b1e6e-52d6-4c33-8e99-c426f77b5dce", realmName="master", clientId="gint-ocr-platform", userId="null", ipAddress="192.168.1.66", error="client_not_found", grant_type="client_credentials"
+Apr 09 15:38:08 gisso kc.sh[1161]: 2026-04-09 15:38:08,011 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-27) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 15:38:10 gisso kc.sh[1161]: 2026-04-09 15:38:10,436 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-27) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 09 23:32:38 gisso kc.sh[1161]: 2026-04-09 23:32:38,813 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-27) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 10 07:47:52 gisso kc.sh[1161]: 2026-04-10 07:47:52,675 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-27) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+Apr 10 07:47:55 gisso kc.sh[1161]: 2026-04-10 07:47:55,365 WARN  [org.keycloak.cookie.DefaultCookieProvider] (executor-thread-27) Non-secure context detected; cookies are not secured, and will not be available in cross-origin POST requests. Please review your proxy settings as the request appears to have originated from a proxy.
+-- No entries --
+Apr 06 10:41:09 gisso systemd[1]: Stopped A high performance web server and a reverse proxy server.
+Apr 06 10:41:09 gisso systemd[1]: Starting A high performance web server and a reverse proxy server...
+Apr 06 10:41:09 gisso systemd[1]: Started A high performance web server and a reverse proxy server.
+Apr 06 11:01:15 gisso systemd[1]: Stopping A high performance web server and a reverse proxy server...
+Apr 06 11:01:15 gisso systemd[1]: nginx.service: Deactivated successfully.
+Apr 06 11:01:15 gisso systemd[1]: Stopped A high performance web server and a reverse proxy server.
+Apr 06 11:01:15 gisso systemd[1]: Starting A high performance web server and a reverse proxy server...
+Apr 06 11:01:15 gisso systemd[1]: Started A high performance web server and a reverse proxy server.
+-- Boot 5c5321bd48e14c09b8c36a64237367f2 --
+Apr 07 08:38:48 gisso systemd[1]: Starting A high performance web server and a reverse proxy server...
+Apr 07 08:38:49 gisso systemd[1]: Started A high performance web server and a reverse proxy server.
+
+======== DISCOVERY COMPLETE (192.168.1.59) ========

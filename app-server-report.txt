@@ -1,0 +1,360 @@
+
+======== OS & KERNEL ========
+PRETTY_NAME="Ubuntu 22.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.5 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+Linux githemba 5.15.0-174-generic #184-Ubuntu SMP Fri Mar 13 18:41:50 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+ Static hostname: githemba
+       Icon name: computer-desktop
+         Chassis: desktop
+      Machine ID: c039a9a91a7049e3842959ae82f2bf22
+         Boot ID: 16842ceb03854d78bf6ab886e87481dc
+Operating System: Ubuntu 22.04.5 LTS
+          Kernel: Linux 5.15.0-174-generic
+    Architecture: x86-64
+ Hardware Vendor: Dell Inc.
+  Hardware Model: OptiPlex 5040
+
+======== HOSTNAME & IP ========
+githemba
+    inet 127.0.0.1/8 scope host lo
+    inet 192.168.1.66/24 metric 100 brd 192.168.1.255 scope global dynamic enp0s31f6
+
+======== DISK & MEMORY ========
+Filesystem                         Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-ubuntu--lv   98G  7.6G   86G   9% /
+               total        used        free      shared  buff/cache   available
+Mem:           7.6Gi       276Mi       6.2Gi        23Mi       1.2Gi       7.1Gi
+Swap:          4.0Gi          0B       4.0Gi
+
+======== USERS & GROUPS ========
+--- System users with shells ---
+root:x:0:0:root:/root:/bin/bash
+sync:x:4:65534:sync:/bin:/bin/sync
+apps:x:1000:1000:themba:/home/apps:/bin/bash
+postgres:x:114:120:PostgreSQL administrator,,,:/var/lib/postgresql:/bin/bash
+
+--- All groups ---
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:syslog,apps
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:apps
+floppy:x:25:
+tape:x:26:
+sudo:x:27:apps
+audio:x:29:
+dip:x:30:apps
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+gnats:x:41:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:apps
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+systemd-journal:x:101:
+systemd-network:x:102:
+systemd-resolve:x:103:
+messagebus:x:104:
+systemd-timesync:x:105:
+input:x:106:
+sgx:x:107:
+kvm:x:108:
+render:x:109:
+lxd:x:110:apps
+_ssh:x:111:
+crontab:x:112:
+syslog:x:113:
+uuidd:x:114:
+tcpdump:x:115:
+tss:x:116:
+landscape:x:117:
+fwupd-refresh:x:118:
+apps:x:1000:
+ssl-cert:x:119:postgres
+postgres:x:120:
+
+======== PHP ========
+PHP 8.1.2-1ubuntu2.23 (cli) (built: Jan  7 2026 08:37:41) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.1.2, Copyright (c) Zend Technologies
+    with Zend OPcache v8.1.2-1ubuntu2.23, Copyright (c), by Zend Technologies
+[PHP Modules]
+calendar
+Core
+ctype
+curl
+date
+dom
+exif
+FFI
+fileinfo
+filter
+ftp
+gd
+gettext
+hash
+iconv
+json
+libxml
+mbstring
+mysqli
+mysqlnd
+openssl
+pcntl
+pcre
+PDO
+pdo_mysql
+pdo_pgsql
+pgsql
+Phar
+posix
+readline
+Reflection
+session
+shmop
+SimpleXML
+sockets
+sodium
+SPL
+standard
+sysvmsg
+sysvsem
+sysvshm
+tokenizer
+xml
+xmlreader
+xmlwriter
+xsl
+Zend OPcache
+zip
+zlib
+
+[Zend Modules]
+Zend OPcache
+
+Loaded Configuration File => /etc/php/8.1/cli/php.ini
+
+======== APACHE / HTTPD ========
+Server version: Apache/2.4.52 (Ubuntu)
+Server built:   2026-03-05T18:04:29
+--- Enabled sites ---
+total 8
+drwxr-xr-x 2 root root 4096 Apr  9 13:09 .
+drwxr-xr-x 8 root root 4096 Apr  6 17:00 ..
+lrwxrwxrwx 1 root root   44 Apr  6 17:01 gismartanalytics.com.conf -> ../sites-available/gismartanalytics.com.conf
+lrwxrwxrwx 1 root root   36 Apr  9 13:09 ocr-platform.conf -> ../sites-available/ocr-platform.conf
+--- Enabled modules ---
+Loaded Modules:
+ core_module (static)
+ so_module (static)
+ watchdog_module (static)
+ http_module (static)
+ log_config_module (static)
+ logio_module (static)
+ version_module (static)
+ unixd_module (static)
+ access_compat_module (shared)
+ alias_module (shared)
+ auth_basic_module (shared)
+ authn_core_module (shared)
+ authn_file_module (shared)
+ authz_core_module (shared)
+ authz_host_module (shared)
+ authz_user_module (shared)
+ autoindex_module (shared)
+ deflate_module (shared)
+ dir_module (shared)
+ env_module (shared)
+ filter_module (shared)
+ headers_module (shared)
+ http2_module (shared)
+ mime_module (shared)
+ mpm_prefork_module (shared)
+ negotiation_module (shared)
+ php_module (shared)
+ proxy_module (shared)
+ proxy_fcgi_module (shared)
+ proxy_http_module (shared)
+ reqtimeout_module (shared)
+ rewrite_module (shared)
+ setenvif_module (shared)
+ socache_shmcb_module (shared)
+ ssl_module (shared)
+ status_module (shared)
+--- Apache ports ---
+# If you just change the port or add more ports here, you will likely also
+# have to change the VirtualHost statement in
+# /etc/apache2/sites-enabled/000-default.conf
+
+Listen 80
+
+<IfModule ssl_module>
+	Listen 443
+</IfModule>
+
+<IfModule mod_gnutls.c>
+	Listen 443
+</IfModule>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+======== POSTGRESQL ========
+psql (PostgreSQL) 14.22 (Ubuntu 14.22-0ubuntu0.22.04.1)
+Ver Cluster Port Status Owner    Data directory              Log file
+14  main    5432 online postgres /var/lib/postgresql/14/main /var/log/postgresql/postgresql-14-main.log
+● postgresql.service - PostgreSQL RDBMS
+     Loaded: loaded (/lib/systemd/system/postgresql.service; enabled; vendor preset: enabled)
+     Active: active (exited) since Thu 2026-04-09 11:01:56 UTC; 21h ago
+    Process: 4776 ExecStart=/bin/true (code=exited, status=0/SUCCESS)
+   Main PID: 4776 (code=exited, status=0/SUCCESS)
+        CPU: 1ms
+
+Apr 09 11:01:56 githemba systemd[1]: Starting PostgreSQL RDBMS...
+Apr 09 11:01:56 githemba systemd[1]: Finished PostgreSQL RDBMS.
+--- pg_hba.conf (non-comment lines) ---
+
+
+
+
+local   all             postgres                                peer
+
+
+local   all             all                                     peer
+host    all             all             127.0.0.1/32            scram-sha-256
+host    all             all             ::1/128                 scram-sha-256
+local   replication     all                                     peer
+host    replication     all             127.0.0.1/32            scram-sha-256
+host    replication     all             ::1/128                 scram-sha-256
+host    ocr_platform    ocr_app    192.168.1.90/32    scram-sha-256
+--- Databases ---
+                                   List of databases
+     Name     |  Owner   | Encoding |   Collate   |    Ctype    |   Access privileges   
+--------------+----------+----------+-------------+-------------+-----------------------
+ ocr_platform | ocr_app  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+ postgres     | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+ template0    | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+              |          |          |             |             | postgres=CTc/postgres
+ template1    | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+              |          |          |             |             | postgres=CTc/postgres
+(4 rows)
+
+--- Roles ---
+                                   List of roles
+ Role name |                         Attributes                         | Member of 
+-----------+------------------------------------------------------------+-----------
+ ocr_app   |                                                            | {}
+ postgres  | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+
+--- listen_addresses ---
+listen_addresses = 'localhost,192.168.1.66'
+
+======== COMPOSER ========
+Composer version 2.9.5 2026-01-29 11:40:53
+
+======== EXISTING WEB APPS ========
+--- /var/www contents ---
+total 20
+drwxr-xr-x  5 root     root     4096 Apr  9 10:52 .
+drwxr-xr-x 14 root     root     4096 Apr  6 17:00 ..
+drwxr-xr-x  5 www-data www-data 4096 Apr  6 17:01 gismartanalytics
+drwxr-xr-x  2 root     root     4096 Apr  6 17:00 html
+drwxr-xr-x  8 www-data www-data 4096 Apr  9 10:52 ocr-platform
+--- /var/www/html contents ---
+total 20
+drwxr-xr-x 2 root root  4096 Apr  6 17:00 .
+drwxr-xr-x 5 root root  4096 Apr  9 10:52 ..
+-rw-r--r-- 1 root root 10671 Apr  6 17:00 index.html
+
+======== FIREWALL ========
+Status: inactive
+
+======== LISTENING PORTS ========
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                                                                                                                                                                                                       
+LISTEN 0      244        127.0.0.1:5432      0.0.0.0:*    users:(("postgres",pid=4758,fd=5))                                                                                                                                                                                           
+LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*    users:(("systemd-resolve",pid=739,fd=14))                                                                                                                                                                                    
+LISTEN 0      128          0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=811,fd=3))                                                                                                                                                                                                
+LISTEN 0      244     192.168.1.66:5432      0.0.0.0:*    users:(("postgres",pid=4758,fd=6))                                                                                                                                                                                           
+LISTEN 0      128             [::]:22           [::]:*    users:(("sshd",pid=811,fd=4))                                                                                                                                                                                                
+LISTEN 0      511                *:80              *:*    users:(("apache2",pid=14229,fd=4),("apache2",pid=14223,fd=4),("apache2",pid=10433,fd=4),("apache2",pid=10431,fd=4),("apache2",pid=10429,fd=4),("apache2",pid=10428,fd=4),("apache2",pid=10427,fd=4),("apache2",pid=802,fd=4))
+LISTEN 0      511                *:443             *:*    users:(("apache2",pid=14229,fd=6),("apache2",pid=14223,fd=6),("apache2",pid=10433,fd=6),("apache2",pid=10431,fd=6),("apache2",pid=10429,fd=6),("apache2",pid=10428,fd=6),("apache2",pid=10427,fd=6),("apache2",pid=802,fd=6))
+
+======== SYSTEMD SERVICES (running) ========
+  UNIT                        LOAD   ACTIVE SUB     DESCRIPTION
+  apache2.service             loaded active running The Apache HTTP Server
+  cron.service                loaded active running Regular background program processing daemon
+  dbus.service                loaded active running D-Bus System Message Bus
+  getty@tty1.service          loaded active running Getty on tty1
+  irqbalance.service          loaded active running irqbalance daemon
+  ModemManager.service        loaded active running Modem Manager
+  multipathd.service          loaded active running Device-Mapper Multipath Device Controller
+  networkd-dispatcher.service loaded active running Dispatcher daemon for systemd-networkd
+  packagekit.service          loaded active running PackageKit Daemon
+  php8.1-fpm.service          loaded active running The PHP 8.1 FastCGI Process Manager
+  polkit.service              loaded active running Authorization Manager
+  postgresql@14-main.service  loaded active running PostgreSQL Cluster 14-main
+  rsyslog.service             loaded active running System Logging Service
+  snapd.service               loaded active running Snap Daemon
+  ssh.service                 loaded active running OpenBSD Secure Shell server
+  systemd-hostnamed.service   loaded active running Hostname Service
+  systemd-journald.service    loaded active running Journal Service
+  systemd-logind.service      loaded active running User Login Management
+  systemd-networkd.service    loaded active running Network Configuration
+  systemd-resolved.service    loaded active running Network Name Resolution
+  systemd-timesyncd.service   loaded active running Network Time Synchronization
+  systemd-udevd.service       loaded active running Rule-based Manager for Device Events and Files
+  thermald.service            loaded active running Thermal Daemon Service
+  udisks2.service             loaded active running Disk Manager
+  unattended-upgrades.service loaded active running Unattended Upgrades Shutdown
+  upower.service              loaded active running Daemon for power management
+  user@1000.service           loaded active running User Manager for UID 1000
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+27 loaded units listed.
+
+======== DOCKER ========
+Docker not installed
+
+======== ENV VARS (non-sensitive) ========
+SHELL=/bin/bash
+SUDO_USER=apps
+HOME=/root
+LANG=en_US.UTF-8
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+USER=root
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+
+======== DISCOVERY COMPLETE (192.168.1.66) ========
