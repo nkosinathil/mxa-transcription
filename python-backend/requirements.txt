@@ -1,0 +1,30 @@
+# Python Backend Requirements
+# FastAPI and dependencies
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-multipart>=0.0.6
+
+# Celery and Redis
+celery>=5.3.4
+redis>=5.0.1
+
+# Database
+psycopg2-binary>=2.9.9
+sqlalchemy>=2.0.25
+
+# MinIO
+minio>=7.2.3
+
+# Audio processing (from original requirements)
+faster-whisper>=1.0.3
+ffmpeg-python>=0.2.0
+imageio-ffmpeg>=0.5.1
+mutagen>=1.47.0
+pyannote.audio>=3.1.1
+soundfile>=0.12.1
+numpy>=1.26.0
+
+# Utilities
+python-dotenv>=1.0.0
