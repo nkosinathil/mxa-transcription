@@ -85,7 +85,31 @@ Browser → Apache/PHP (192.168.1.66) → FastAPI/Celery/Python (192.168.1.90)
 
 ## Quick Start
 
+### Automated Setup (Recommended)
+
+Interactive setup scripts for each server with automatic configuration:
+
+```bash
+# 1. App Server (192.168.1.66) - PHP/Apache/PostgreSQL
+sudo ./setup-app-server.sh
+
+# 2. Python Server (192.168.1.90) - FastAPI/Celery/Redis/MinIO
+sudo ./setup-python-server.sh
+
+# 3. SSO Server (192.168.1.59) - Keycloak
+sudo ./setup-sso-server.sh
+```
+
+Each script will:
+- Prompt for configuration values (database passwords, API keys, etc.)
+- Install required system packages
+- Configure services and systemd units
+- Create .env files with your settings
+- Set up databases and storage buckets
+
 See the full deployment guide: [docs/deployment.md](docs/deployment.md)
+
+### Manual Setup
 
 ```bash
 # 1. Set up PostgreSQL (App Server)
