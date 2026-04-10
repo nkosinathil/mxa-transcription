@@ -1,0 +1,35 @@
+[Unit]
+Description=MXA Transcription – Celery Worker
+Documentation=https://github.com/nkosinathil/mxa-transcription
+After=network.target redis.service transcription-api.service
+
+[Service]
+User=transcription
+Group=transcription
+WorkingDirectory=/opt/mxa-transcription/python-backend
+
+EnvironmentFile=/opt/mxa-transcription/python-backend/.env
+
+# Start one Celery worker with concurrency of 2.
+# Reduce --concurrency if the server has limited RAM (each worker loads the
+# Whisper model separately; a medium model uses ~2 GB RAM each).
+ExecStart=/opt/mxa-transcription/python-backend/.venv/bin/celery \
+    -A app.core.celery_app worker \
+    --loglevel=info \
+    --concurrency=2 \
+    --queues=transcription \
+    --hostname=worker@%h \
+    --logfile=/var/log/mxa-transcription/celery.log
+
+Restart=on-failure
+RestartSec=10s
+
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Give the worker plenty of time to finish a long transcription task
+# before being forcefully killed on shutdown
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target

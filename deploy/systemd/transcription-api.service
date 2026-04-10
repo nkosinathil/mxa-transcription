@@ -1,0 +1,36 @@
+[Unit]
+Description=MXA Transcription – FastAPI API Server
+Documentation=https://github.com/nkosinathil/mxa-transcription
+After=network.target redis.service
+
+[Service]
+# Run as a dedicated non-root user for security
+User=transcription
+Group=transcription
+WorkingDirectory=/opt/mxa-transcription/python-backend
+
+# Load environment variables from .env file
+EnvironmentFile=/opt/mxa-transcription/python-backend/.env
+
+# Activate the virtual environment and start uvicorn
+ExecStart=/opt/mxa-transcription/python-backend/.venv/bin/uvicorn \
+    app.main:app \
+    --host 0.0.0.0 \
+    --port 8000 \
+    --workers 2 \
+    --log-level info \
+    --access-log
+
+# Gracefully reload on SIGHUP (e.g. after code update)
+ExecReload=/bin/kill -s HUP $MAINPID
+
+# Restart policy
+Restart=on-failure
+RestartSec=5s
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
