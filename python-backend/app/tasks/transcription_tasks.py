@@ -1,17 +1,21 @@
 """
 Celery tasks for audio transcription
 """
-import sys
-import json
-from pathlib import Path
-from typing import Dict, Any
-import logging
+from __future__ import annotations
 
-# Add the audio_pipeline to Python path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
+import json
+import logging
+import sys
+import tempfile
+from pathlib import Path
+from typing import Any, Dict
+
+# Ensure the repo root (which contains audio_pipeline/) is on sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from app.tasks.celery_app import celery_app
 from app.core.config import settings
+from app.core.storage import storage
 from audio_pipeline.pipeline import AudioPipeline
 
 logger = logging.getLogger(__name__)
@@ -20,119 +24,120 @@ logger = logging.getLogger(__name__)
 @celery_app.task(bind=True, name="transcribe_audio_task")
 def transcribe_audio_task(
     self,
-    audio_path: str,
     job_id: str,
     filename: str,
-    file_hash: str
+    file_hash: str,
+    minio_path: str,
 ) -> Dict[str, Any]:
     """
-    Celery task to transcribe audio file
-    
+    Celery task that:
+      1. Downloads the audio file from MinIO.
+      2. Runs the AudioPipeline (Whisper transcription + Pyannote diarization).
+      3. Uploads transcript JSON and TXT back to MinIO.
+      4. Returns a result summary used by the job-status endpoint.
+
     Args:
-        audio_path: Path to audio file
-        job_id: Job UUID from database
-        filename: Original filename
-        file_hash: SHA256 hash of file
-    
+        job_id:     Job UUID from the database.
+        filename:   Original filename (used to preserve the extension).
+        file_hash:  SHA-256 of the original file (for audit / integrity checks).
+        minio_path: Path returned by the upload endpoint (``bucket/object``).
+
     Returns:
-        Transcription results
+        Dictionary with transcription results.
     """
-    try:
-        logger.info(f"Starting transcription for job {job_id}: {filename}")
-        
-        # Update task status
-        self.update_state(
-            state="PROCESSING",
-            meta={"status": "processing", "progress": 0}
-        )
-        
-        # Initialize audio pipeline
+    logger.info("Transcription started  job=%s  file=%s", job_id, filename)
+    self.update_state(state="STARTED", meta={"status": "downloading", "progress": 0})
+
+    with tempfile.TemporaryDirectory(prefix="mxa_celery_") as tmp:
+        tmp_path = Path(tmp)
+        input_dir = tmp_path / "input"
+        output_dir = tmp_path / "output"
+        input_dir.mkdir()
+        output_dir.mkdir()
+
+        # ------------------------------------------------------------------
+        # 1. Download audio from MinIO
+        # ------------------------------------------------------------------
+        local_audio = input_dir / filename
+        try:
+            storage.download_audio(job_id, filename, str(local_audio))
+        except Exception as exc:
+            logger.error("Download failed  job=%s: %s", job_id, exc, exc_info=True)
+            raise
+
+        self.update_state(state="STARTED", meta={"status": "processing", "progress": 10})
+
+        # ------------------------------------------------------------------
+        # 2. Run transcription pipeline
+        # ------------------------------------------------------------------
         pipeline = AudioPipeline(
             model_size=settings.WHISPER_MODEL_SIZE,
             device=settings.WHISPER_DEVICE,
             compute_type=settings.WHISPER_COMPUTE_TYPE,
-            diarization_enabled=settings.DIARIZATION_ENABLED
+            diarization_enabled=settings.DIARIZATION_ENABLED,
         )
-        
-        # Create temporary output directory
-        output_dir = Path(f"/tmp/mxa-transcripts/{job_id}")
-        output_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Run transcription pipeline
-        input_file = Path(audio_path)
-        
-        def progress_callback(msg: str):
-            logger.info(f"[{job_id}] {msg}")
-        
-        def item_callback(index: int, total: int, name: str):
-            progress = int((index / total) * 100) if total > 0 else 0
+
+        def _progress(msg: str) -> None:
+            logger.info("[job=%s] %s", job_id, msg)
+
+        def _item(index: int, total: int, name: str) -> None:
+            pct = int((index / total) * 80) + 10 if total else 10
             self.update_state(
-                state="PROCESSING",
-                meta={"status": "processing", "progress": progress, "current_file": name}
+                state="STARTED",
+                meta={"status": "processing", "progress": pct, "current_file": name},
             )
-        
-        # Run pipeline on single file
-        # Note: The pipeline expects a directory, so we'll create a temp directory
-        temp_input_dir = Path(f"/tmp/mxa-input/{job_id}")
-        temp_input_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Copy file to temp input directory
-        import shutil
-        temp_file = temp_input_dir / filename
-        shutil.copy2(audio_path, temp_file)
-        
-        # Run pipeline
+
         summary = pipeline.run(
-            input_dir=temp_input_dir,
+            input_dir=input_dir,
             output_dir=output_dir,
-            progress_callback=progress_callback,
-            item_callback=item_callback
+            progress_callback=_progress,
+            item_callback=_item,
         )
-        
-        # Extract result for this file
-        if summary["results"]:
-            result = summary["results"][0]
-            
-            # Save transcript files
-            transcript_json = output_dir / "transcripts" / f"{Path(filename).stem}.json"
-            transcript_txt = output_dir / "transcripts" / f"{Path(filename).stem}.txt"
-            
-            # Save to final location
-            final_json = output_dir / f"{job_id}.json"
-            final_txt = output_dir / f"{job_id}.txt"
-            
-            if transcript_json.exists():
-                shutil.copy2(transcript_json, final_json)
-            if transcript_txt.exists():
-                shutil.copy2(transcript_txt, final_txt)
-            
-            # Cleanup temp files
-            shutil.rmtree(temp_input_dir, ignore_errors=True)
-            if Path(audio_path).exists():
-                Path(audio_path).unlink()
-            
-            logger.info(f"Transcription completed for job {job_id}")
-            
-            return {
-                "success": True,
-                "job_id": job_id,
-                "status": result.get("status"),
-                "language": result.get("language"),
-                "duration": result.get("duration"),
-                "speaker_count": result.get("speaker_count"),
-                "transcript_json": str(final_json) if final_json.exists() else None,
-                "transcript_txt": str(final_txt) if final_txt.exists() else None,
-                "segments_count": len(result.get("segments", [])),
-                "note": result.get("note"),
-                "diarization_note": result.get("diarization_note")
-            }
-        else:
-            raise Exception("No results from transcription pipeline")
-            
-    except Exception as e:
-        logger.error(f"Transcription failed for job {job_id}: {str(e)}", exc_info=True)
-        self.update_state(
-            state="FAILURE",
-            meta={"status": "failed", "error": str(e)}
-        )
-        raise
+
+        if not summary.get("results"):
+            raise RuntimeError("Pipeline returned no results")
+
+        result = summary["results"][0]
+
+        # ------------------------------------------------------------------
+        # 3. Upload transcripts to MinIO
+        # ------------------------------------------------------------------
+        self.update_state(state="STARTED", meta={"status": "uploading", "progress": 95})
+
+        stem = Path(filename).stem
+        json_file = output_dir / "transcripts" / f"{stem}.json"
+        txt_file = output_dir / "transcripts" / f"{stem}.txt"
+
+        transcript_json_path: str | None = None
+        transcript_txt_path: str | None = None
+
+        if json_file.exists():
+            with open(json_file, "r", encoding="utf-8") as fh:
+                transcript_data = json.load(fh)
+            transcript_json_path = storage.upload_transcript_json(job_id, transcript_data)
+            logger.info("Uploaded JSON transcript  job=%s -> %s", job_id, transcript_json_path)
+
+        if txt_file.exists():
+            txt_content = txt_file.read_text(encoding="utf-8")
+            transcript_txt_path = storage.upload_transcript_txt(job_id, txt_content)
+            logger.info("Uploaded TXT transcript  job=%s -> %s", job_id, transcript_txt_path)
+
+    # ------------------------------------------------------------------
+    # 4. Return result summary
+    # ------------------------------------------------------------------
+    logger.info("Transcription completed  job=%s  status=%s", job_id, result.get("status"))
+
+    return {
+        "success": True,
+        "job_id": job_id,
+        "status": result.get("status"),
+        "language": result.get("language"),
+        "language_probability": result.get("language_probability"),
+        "duration": result.get("duration"),
+        "speaker_count": result.get("speaker_count"),
+        "segments_count": len(result.get("segments", [])),
+        "transcript_json_path": transcript_json_path,
+        "transcript_txt_path": transcript_txt_path,
+        "note": result.get("note"),
+        "diarization_note": result.get("diarization_note"),
+    }

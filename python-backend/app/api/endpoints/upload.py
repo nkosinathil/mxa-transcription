@@ -1,34 +1,42 @@
 """
 File upload endpoints
 """
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, status
-from typing import Dict, Any
-import os
-import hashlib
-from pathlib import Path
+from __future__ import annotations
 
-from app.core.dependencies import verify_api_key
+import hashlib
+import logging
+from pathlib import Path
+from typing import Any, Dict
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+
 from app.core.config import settings
+from app.core.dependencies import verify_api_key
+from app.core.storage import storage
 from app.tasks.transcription_tasks import transcribe_audio_task
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 async def validate_audio_file(file: UploadFile) -> None:
-    """Validate uploaded audio file"""
-    # Check file extension
-    file_ext = Path(file.filename).suffix.lower()
+    """Validate uploaded audio file extension and declared size."""
+    file_ext = Path(file.filename or "").suffix.lower()
     if file_ext not in settings.ALLOWED_AUDIO_EXTENSIONS:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid file type. Allowed: {', '.join(settings.ALLOWED_AUDIO_EXTENSIONS)}"
+            detail=(
+                f"Invalid file type '{file_ext}'. "
+                f"Allowed: {', '.join(settings.ALLOWED_AUDIO_EXTENSIONS)}"
+            ),
         )
-    
-    # Check file size (if content_length is available)
     if file.size and file.size > settings.MAX_UPLOAD_SIZE:
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-            detail=f"File too large. Maximum size: {settings.MAX_UPLOAD_SIZE / (1024*1024):.0f}MB"
+            detail=(
+                f"File too large. "
+                f"Maximum size: {settings.MAX_UPLOAD_SIZE / (1024 * 1024):.0f} MB"
+            ),
         )
 
 
@@ -36,60 +44,64 @@ async def validate_audio_file(file: UploadFile) -> None:
 async def upload_audio(
     file: UploadFile = File(...),
     job_id: str = None,
-    api_key: str = Depends(verify_api_key)
+    api_key: str = Depends(verify_api_key),
 ) -> Dict[str, Any]:
     """
-    Upload audio file and queue transcription task
-    
+    Receive an audio file, persist it in MinIO, and queue a Celery transcription task.
+
     Args:
-        file: Audio file to transcribe
-        job_id: UUID of the job (from PHP frontend)
-        api_key: API key for authentication
-    
+        file:    Audio file to transcribe.
+        job_id:  UUID of the pre-created job record (from the PHP frontend).
+        api_key: Verified via X-Api-Key header.
+
     Returns:
-        Job information including task ID
+        JSON payload with job_id, task_id, and initial status.
     """
-    # Validate file
     await validate_audio_file(file)
-    
+
     try:
-        # Read file content
-        content = await file.read()
+        content: bytes = await file.read()
         file_size = len(content)
-        
-        # Calculate SHA256 hash
+
+        # Guard against declared-size bypass
+        if file_size > settings.MAX_UPLOAD_SIZE:
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail=f"File too large. Maximum size: {settings.MAX_UPLOAD_SIZE / (1024 * 1024):.0f} MB",
+            )
+
         file_hash = hashlib.sha256(content).hexdigest()
-        
-        # Generate storage path
-        storage_path = f"{job_id}/{file.filename}" if job_id else file.filename
-        
-        # TODO: Upload to MinIO
-        # For now, store locally in temp directory
-        temp_dir = Path("/tmp/mxa-uploads")
-        temp_dir.mkdir(parents=True, exist_ok=True)
-        temp_file = temp_dir / f"{job_id}_{file.filename}"
-        temp_file.write_bytes(content)
-        
+        filename = file.filename or f"{job_id}.audio"
+
+        # Persist in MinIO
+        minio_path = storage.upload_audio(job_id, filename, content)
+        logger.info("Stored audio %s -> %s", filename, minio_path)
+
         # Queue Celery task
         task = transcribe_audio_task.delay(
-            audio_path=str(temp_file),
             job_id=job_id,
-            filename=file.filename,
-            file_hash=file_hash
+            filename=filename,
+            file_hash=file_hash,
+            minio_path=minio_path,
         )
-        
+        logger.info("Queued transcription task %s for job %s", task.id, job_id)
+
         return {
             "success": True,
             "job_id": job_id,
             "task_id": task.id,
-            "filename": file.filename,
+            "filename": filename,
             "file_size": file_size,
             "file_hash": file_hash,
-            "status": "queued"
+            "minio_path": minio_path,
+            "status": "queued",
         }
-        
-    except Exception as e:
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.error("Upload failed for job %s: %s", job_id, exc, exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Upload failed: {str(e)}"
+            detail=f"Upload failed: {exc}",
         )
