@@ -64,15 +64,18 @@ Browser → Apache/PHP (192.168.1.66) → FastAPI/Celery/Python (192.168.1.90)
 
 ### Pre-Deployment Requirements
 
-1. **Validate deployment readiness:**
+1. **Use automated setup scripts (recommended):**
+   See [SETUP_SCRIPTS.md](SETUP_SCRIPTS.md) for 3 interactive server setup scripts.
+
+2. **Or validate deployment readiness manually:**
    ```bash
    python validate-deployment.py
    ```
 
-2. **Review the complete checklist:**
+3. **Review the complete checklist:**
    See [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) for a comprehensive list of tasks.
 
-3. **Key requirements before deployment:**
+4. **Key requirements before deployment:**
    - Create and configure `.env` files (copy from `.env.example`)
    - Generate strong secrets for `SESSION_SECRET` and `API_SECRET_KEY`
    - Set up external services (Keycloak, PostgreSQL, Redis, MinIO)
