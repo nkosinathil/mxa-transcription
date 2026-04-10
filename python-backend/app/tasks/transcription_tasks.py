@@ -57,12 +57,14 @@ def transcribe_audio_task(
 
         # ------------------------------------------------------------------
         # 1. Download audio from MinIO
+        # minio_path is the canonical location: "<bucket>/<job_id>/<filename>"
         # ------------------------------------------------------------------
+        logger.info("Downloading  minio_path=%s", minio_path)
         local_audio = input_dir / filename
         try:
             storage.download_audio(job_id, filename, str(local_audio))
         except Exception as exc:
-            logger.error("Download failed  job=%s: %s", job_id, exc, exc_info=True)
+            logger.error("Download failed  job=%s  path=%s: %s", job_id, minio_path, exc, exc_info=True)
             raise
 
         self.update_state(state="STARTED", meta={"status": "processing", "progress": 10})

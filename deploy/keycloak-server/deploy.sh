@@ -53,11 +53,19 @@ rm keycloak-${KEYCLOAK_VERSION}.zip
 # Change ownership
 chown -R $USER:$USER $KEYCLOAK_DIR
 
-# Step 5: Create admin user
+# Step 5: Create admin user with a randomly-generated password
 echo "[5/7] Creating Keycloak admin user..."
+KEYCLOAK_ADMIN_PASSWORD="$(tr -dc 'A-Za-z0-9!@#%^&*()_+' < /dev/urandom | head -c 24)"
 cd $KEYCLOAK_DIR
-sudo -u $USER $KEYCLOAK_DIR/bin/kc.sh bootstrap-admin -u admin -p admin
-echo "IMPORTANT: Change the admin password after first login!"
+sudo -u $USER $KEYCLOAK_DIR/bin/kc.sh bootstrap-admin -u admin -p "${KEYCLOAK_ADMIN_PASSWORD}"
+
+echo
+echo "╔══════════════════════════════════════════════════╗"
+echo "║  Keycloak admin credentials (save these now!)   ║"
+echo "║  Username: admin                                 ║"
+printf  "║  Password: %-38s║\n" "${KEYCLOAK_ADMIN_PASSWORD}"
+echo "╚══════════════════════════════════════════════════╝"
+echo
 
 # Step 6: Configure Keycloak systemd service
 echo "[6/7] Creating Keycloak systemd service..."

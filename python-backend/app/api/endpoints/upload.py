@@ -43,7 +43,7 @@ async def validate_audio_file(file: UploadFile) -> None:
 @router.post("/", response_model=Dict[str, Any])
 async def upload_audio(
     file: UploadFile = File(...),
-    job_id: str = None,
+    job_id: str = ...,
     api_key: str = Depends(verify_api_key),
 ) -> Dict[str, Any]:
     """

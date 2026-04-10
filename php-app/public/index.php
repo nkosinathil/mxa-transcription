@@ -79,7 +79,7 @@ switch ($uri) {
         }
         break;
         
-    case (preg_match('/^\/jobs\/([a-f0-9\-]+)$/', $uri, $matches) ? true : false):
+    case (bool) preg_match('/^\/jobs\/([a-f0-9\-]+)$/', $uri, $matches):
         if (!$auth->isAuthenticated()) {
             header('Location: /auth/login');
             exit;

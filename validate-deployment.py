@@ -101,7 +101,7 @@ def check_php_role() -> None:
             val = loaded.get(key, "")
             check(
                 f"{key} is not a placeholder",
-                lambda v=val, k=key: bool(v) and v not in ("change_this_password", "change-this-in-production", "your_keycloak_client_secret_here"),
+                lambda v=val: bool(v) and v not in ("change_this_password", "change-this-in-production", "your_keycloak_client_secret_here"),
             )
 
     check("PostgreSQL reachable (localhost:5432)", lambda: tcp_reachable("localhost", 5432))

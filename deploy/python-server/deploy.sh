@@ -51,10 +51,28 @@ else
     echo "User $USER already exists"
 fi
 
-# Step 4: Install MinIO
+# Step 4: Install MinIO (binary + SHA256 verification)
 echo "[4/12] Installing MinIO..."
-wget https://dl.min.io/server/minio/release/linux-amd64/minio -O /usr/local/bin/minio
-chmod +x /usr/local/bin/minio
+MINIO_URL="https://dl.min.io/server/minio/release/linux-amd64/minio"
+MINIO_SHASUM_URL="${MINIO_URL}.sha256sum"
+MINIO_TMP="/tmp/minio_binary"
+
+wget -q "${MINIO_URL}" -O "${MINIO_TMP}"
+wget -q "${MINIO_SHASUM_URL}" -O "${MINIO_TMP}.sha256sum"
+
+# Verify checksum (file contains "<hash>  minio", so we compare just the hash)
+EXPECTED_SHA=$(awk '{print $1}' "${MINIO_TMP}.sha256sum")
+ACTUAL_SHA=$(sha256sum "${MINIO_TMP}" | awk '{print $1}')
+if [ "${EXPECTED_SHA}" != "${ACTUAL_SHA}" ]; then
+    echo "ERROR: MinIO binary checksum mismatch. Aborting."
+    echo "  expected: ${EXPECTED_SHA}"
+    echo "  actual:   ${ACTUAL_SHA}"
+    exit 1
+fi
+
+install -m 0755 "${MINIO_TMP}" /usr/local/bin/minio
+rm -f "${MINIO_TMP}" "${MINIO_TMP}.sha256sum"
+echo "MinIO installed and checksum verified."
 
 # Create MinIO directories
 mkdir -p /opt/minio/data
