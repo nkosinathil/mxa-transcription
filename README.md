@@ -58,6 +58,31 @@ Browser → Apache/PHP (192.168.1.66) → FastAPI/Celery/Python (192.168.1.90)
 
 ---
 
+## Deployment Status
+
+✅ **Code is ready for deployment** with proper environment configuration.
+
+### Pre-Deployment Requirements
+
+1. **Validate deployment readiness:**
+   ```bash
+   python validate-deployment.py
+   ```
+
+2. **Review the complete checklist:**
+   See [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) for a comprehensive list of tasks.
+
+3. **Key requirements before deployment:**
+   - Create and configure `.env` files (copy from `.env.example`)
+   - Generate strong secrets for `SESSION_SECRET` and `API_SECRET_KEY`
+   - Set up external services (Keycloak, PostgreSQL, Redis, MinIO)
+   - Run database migrations
+   - Install dependencies (`composer install`, `pip install -r requirements.txt`)
+   - Configure HTTPS for production
+   - Change all default passwords
+
+---
+
 ## Quick Start
 
 See the full deployment guide: [docs/deployment.md](docs/deployment.md)
@@ -107,10 +132,11 @@ celery -A app.core.celery_app worker --loglevel=info
 
 - Secrets are stored in `.env` files, never in source code
 - All user input is validated and sanitised
-- CSRF protection on forms
+- CSRF protection available via `CsrfService::generate()` and `CsrfService::validate()`
 - Role checks on all protected routes
 - Audit log for all important actions
 - `HttpOnly` session cookies
+- **Production requirement:** Enable HTTPS and update all URLs in `.env` files
 
 ---
 
