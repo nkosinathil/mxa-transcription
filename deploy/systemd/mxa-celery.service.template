@@ -1,0 +1,21 @@
+[Unit]
+Description=MXA Transcription Celery worker
+After=network.target redis-server.service minio.service
+Wants=redis-server.service minio.service
+
+[Service]
+Type=simple
+User={{APP_USER}}
+Group={{APP_GROUP}}
+WorkingDirectory={{BACKEND_APP_DIR}}/python-backend
+EnvironmentFile={{PYTHON_ENV_FILE}}
+Environment=PATH={{BACKEND_VENV_DIR}}/bin
+Environment=PYTHONPATH={{BACKEND_APP_DIR}}
+ExecStart={{BACKEND_VENV_DIR}}/bin/celery -A app.tasks.celery_app worker --loglevel=info --concurrency={{CELERY_CONCURRENCY}}
+Restart=always
+RestartSec=10
+StandardOutput=append:{{BACKEND_LOG_DIR}}/mxa-celery.log
+StandardError=append:{{BACKEND_LOG_DIR}}/mxa-celery.log
+
+[Install]
+WantedBy=multi-user.target

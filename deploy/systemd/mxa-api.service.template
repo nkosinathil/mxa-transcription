@@ -1,0 +1,20 @@
+[Unit]
+Description=MXA Transcription FastAPI service
+After=network.target redis-server.service minio.service
+Wants=redis-server.service minio.service
+
+[Service]
+Type=simple
+User={{APP_USER}}
+Group={{APP_GROUP}}
+WorkingDirectory={{BACKEND_APP_DIR}}/python-backend
+EnvironmentFile={{PYTHON_ENV_FILE}}
+Environment=PATH={{BACKEND_VENV_DIR}}/bin
+ExecStart={{BACKEND_VENV_DIR}}/bin/uvicorn app.main:app --host {{BACKEND_API_HOST}} --port {{BACKEND_API_PORT}}
+Restart=always
+RestartSec=10
+StandardOutput=append:{{BACKEND_LOG_DIR}}/mxa-api.log
+StandardError=append:{{BACKEND_LOG_DIR}}/mxa-api.log
+
+[Install]
+WantedBy=multi-user.target

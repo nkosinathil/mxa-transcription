@@ -1,0 +1,17 @@
+[Unit]
+Description=Keycloak identity provider
+After=network.target
+
+[Service]
+Type=simple
+User={{KEYCLOAK_USER}}
+Group={{KEYCLOAK_GROUP}}
+WorkingDirectory={{KEYCLOAK_DIR}}
+EnvironmentFile={{KEYCLOAK_ENV_FILE}}
+ExecStart={{KEYCLOAK_DIR}}/bin/kc.sh start --http-enabled=true --hostname-strict=false --proxy=edge --http-port ${KC_HTTP_PORT}
+Restart=always
+RestartSec=10
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

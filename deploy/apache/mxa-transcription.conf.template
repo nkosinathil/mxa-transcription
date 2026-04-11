@@ -1,0 +1,13 @@
+<VirtualHost *:80>
+    ServerName {{FRONTEND_SERVER_NAME}}
+    DocumentRoot {{FRONTEND_APP_DIR}}/php-app/public
+
+    <Directory {{FRONTEND_APP_DIR}}/php-app/public>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog {{APACHE_LOG_DIR}}/mxa-transcription-error.log
+    CustomLog {{APACHE_LOG_DIR}}/mxa-transcription-access.log combined
+</VirtualHost>

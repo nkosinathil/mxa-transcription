@@ -1,0 +1,16 @@
+[Unit]
+Description=MinIO object storage
+After=network.target
+
+[Service]
+Type=simple
+User={{APP_USER}}
+Group={{APP_GROUP}}
+EnvironmentFile={{MINIO_ENV_FILE}}
+ExecStart=/usr/local/bin/minio server ${MINIO_DATA_DIR} --console-address ${MINIO_CONSOLE_ADDRESS}
+Restart=always
+RestartSec=10
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

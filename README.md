@@ -51,22 +51,36 @@ python3 validate-deployment.py --role all
 
 ## Deployment
 
-### One-time server setup
+### Production shell deployment framework
 
-Run each script **as root** on the corresponding server:
+This repository includes a production-oriented shell deployment framework under **[`deploy/`](deploy/README.md)** with:
+- `deploy/scripts/` orchestration and layered setup scripts
+- `deploy/systemd/` service unit templates for FastAPI, Celery, MinIO, and Keycloak
+- `deploy/apache/` Apache virtual host template
+- `deploy/env/deploy.env.example` for deployment-time variables
+
+Typical usage on the target hosts:
 
 ```bash
+cp deploy/env/deploy.env.example deploy/env/deploy.env
+nano deploy/env/deploy.env
+
 # Keycloak server first (192.168.1.59)
-sudo bash deploy/keycloak-server/deploy.sh
+sudo DEPLOY_ENV_FILE=$PWD/deploy/env/deploy.env ./deploy/scripts/deploy-master.sh keycloak
 
 # Python backend (192.168.1.90)
-sudo bash deploy/python-server/deploy.sh
+sudo DEPLOY_ENV_FILE=$PWD/deploy/env/deploy.env ./deploy/scripts/deploy-master.sh backend
 
 # PHP frontend (192.168.1.66)
-sudo bash deploy/php-server/deploy.sh
+sudo DEPLOY_ENV_FILE=$PWD/deploy/env/deploy.env ./deploy/scripts/deploy-master.sh frontend
 ```
 
-Then follow every step in **[DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)**.
+Legacy wrappers remain available:
+- `deploy/keycloak-server/deploy.sh`
+- `deploy/python-server/deploy.sh`
+- `deploy/php-server/deploy.sh`
+
+Then follow every step in **[DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)** and the detailed operator guide in **[`deploy/README.md`](deploy/README.md)**.
 
 ---
 
