@@ -42,7 +42,8 @@ write_env_kv_file "${KEYCLOAK_ENV_FILE}" \
 chmod 0600 "${KEYCLOAK_ENV_FILE}"
 
 if [[ ! -f "${KEYCLOAK_DIR}/.admin_bootstrapped" ]]; then
-    run sudo -u "${KEYCLOAK_USER}" env KC_BOOTSTRAP_ADMIN_USERNAME="${KEYCLOAK_ADMIN_USER}" KC_BOOTSTRAP_ADMIN_PASSWORD="${KEYCLOAK_ADMIN_PASSWORD}" "${KEYCLOAK_DIR}/bin/kc.sh" bootstrap-admin
+    log_info "Bootstrapping Keycloak admin user"
+    sudo -u "${KEYCLOAK_USER}" bash -lc "set -a && source '${KEYCLOAK_ENV_FILE}' && set +a && '${KEYCLOAK_DIR}/bin/kc.sh' bootstrap-admin"
     touch "${KEYCLOAK_DIR}/.admin_bootstrapped"
     chown "${KEYCLOAK_USER}:${KEYCLOAK_GROUP}" "${KEYCLOAK_DIR}/.admin_bootstrapped"
 fi

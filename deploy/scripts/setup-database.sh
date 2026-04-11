@@ -35,10 +35,16 @@ user_exists="$(runuser -u "${DB_SUPERUSER}" -- psql -tAc "SELECT 1 FROM pg_roles
 db_exists="$(runuser -u "${DB_SUPERUSER}" -- psql -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'" | tr -d '[:space:]' || true)"
 
 if [[ "${user_exists}" != "1" ]]; then
-    run runuser -u "${DB_SUPERUSER}" -- psql -c "CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';"
+    log_info "Creating PostgreSQL role ${DB_USER}"
+    runuser -u "${DB_SUPERUSER}" -- psql -v ON_ERROR_STOP=1 <<SQL
+CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';
+SQL
 fi
 if [[ "${db_exists}" != "1" ]]; then
-    run runuser -u "${DB_SUPERUSER}" -- psql -c "CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};"
+    log_info "Creating PostgreSQL database ${DB_NAME}"
+    runuser -u "${DB_SUPERUSER}" -- psql -v ON_ERROR_STOP=1 <<SQL
+CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};
+SQL
 fi
 run runuser -u "${DB_SUPERUSER}" -- psql -c "GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO ${DB_USER};"
 
