@@ -49,6 +49,7 @@ ob_start();
 
 <script>
 const caseId = <?= (int)$case['id'] ?>;
+const csrfToken = window.MXA_CSRF_TOKEN || '';
 let uploadedId = null;
 
 const fileInput = document.getElementById('audioFile');
@@ -84,6 +85,7 @@ uploadBtn.addEventListener('click', async () => {
     document.getElementById('uploadError').style.display = 'none';
 
     const fd = new FormData();
+    fd.append('csrf_token', csrfToken);
     fd.append('audio_file', f);
     fd.append('case_id', caseId);
 
@@ -113,6 +115,7 @@ uploadBtn.addEventListener('click', async () => {
 
 async function startJob(uploadId) {
     const fd = new FormData();
+    fd.append('csrf_token', csrfToken);
     fd.append('model_size', 'base');
     fd.append('diarization', '1');
     const res = await fetch(`/jobs/${uploadId}/start`, { method: 'POST', body: fd });

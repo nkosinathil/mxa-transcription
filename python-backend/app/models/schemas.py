@@ -105,6 +105,7 @@ class SegmentResult(BaseModel):
 class JobResultResponse(BaseModel):
     """Full result returned when a job completes."""
     job_id: int
+    celery_task_id: Optional[str] = None
     status: JobStatus
     language: Optional[str]
     language_probability: Optional[float]
@@ -113,6 +114,7 @@ class JobResultResponse(BaseModel):
     diarization_available: bool
     diarization_note: Optional[str]
     segments: list[SegmentResult] = []
+    transcript_text: Optional[str] = None
     minio_transcript_path: Optional[str]
     minio_json_path: Optional[str]
     minio_html_path: Optional[str]

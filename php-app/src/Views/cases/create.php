@@ -8,6 +8,7 @@ ob_start();
     <form method="POST" action="/cases" class="form-card">
         <h2>Create New Case</h2>
         <p class="form-help">A case is a workspace for grouping related audio files and their transcriptions.</p>
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
 
         <div class="form-group">
             <label for="name">Case Name <span class="required">*</span></label>

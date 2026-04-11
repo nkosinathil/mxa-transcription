@@ -15,6 +15,8 @@ This document lists every environment variable used by each component.
 | `SESSION_NAME` | `mxa_session` | Cookie name for the PHP session |
 | `SESSION_LIFETIME` | `7200` | Session expiry in seconds (7200 = 2 hours) |
 | `SESSION_SECRET` | `<random>` | Random string used for session HMAC |
+| `SESSION_SECURE_COOKIE` | `true` | Set to `true` in production so cookies are HTTPS-only |
+| `SESSION_SAME_SITE` | `Lax` | Session cookie SameSite policy (`Lax`, `Strict`, `None`) |
 | `DB_HOST` | `localhost` | PostgreSQL host |
 | `DB_PORT` | `5432` | PostgreSQL port |
 | `DB_NAME` | `transcription_db` | Database name |
@@ -25,6 +27,7 @@ This document lists every environment variable used by each component.
 | `KEYCLOAK_CLIENT_ID` | `transcription-web` | OIDC client ID in Keycloak |
 | `KEYCLOAK_CLIENT_SECRET` | `secret` | OIDC client secret from Keycloak |
 | `KEYCLOAK_REDIRECT_URI` | `http://192.168.1.66/auth/callback` | Must match Keycloak config |
+| `KEYCLOAK_VERIFY_TLS` | `true` | Verify Keycloak TLS certificates in production |
 | `PYTHON_API_BASE_URL` | `http://192.168.1.90:8000` | Python API base URL |
 | `PYTHON_API_KEY` | `<random>` | Shared secret for PHP→Python auth |
 | `MINIO_ENDPOINT` | `192.168.1.90:9000` | MinIO host:port |
@@ -59,6 +62,7 @@ This document lists every environment variable used by each component.
 | `DEFAULT_MODEL_SIZE` | `base` | Default Whisper model (tiny/base/small/medium/large-v3) |
 | `DEFAULT_DEVICE` | `auto` | Inference device: auto/cpu/cuda |
 | `MAX_UPLOAD_BYTES` | `524288000` | 500 MB maximum file size |
+| `CORS_ALLOW_ORIGINS` | `http://192.168.1.66` | Comma-separated allowed browser origins for API CORS |
 
 ---
 

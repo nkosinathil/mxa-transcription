@@ -14,6 +14,7 @@ use App\Middleware\RoleMiddleware;
 use App\Repositories\JobRepository;
 use App\Repositories\UploadRepository;
 use App\Services\AuditService;
+use App\Services\CsrfService;
 use App\Services\PythonApiClient;
 
 class JobController
@@ -35,6 +36,10 @@ class JobController
     {
         RoleMiddleware::require('analyst');
         $user = AuthMiddleware::user();
+        if (!CsrfService::validate($_POST['csrf_token'] ?? null)) {
+            $this->jsonError('Invalid CSRF token.', 419);
+            return;
+        }
 
         $uploadRepo = new UploadRepository();
         $upload     = $uploadRepo->findById($uploadId);
@@ -98,6 +103,11 @@ class JobController
     {
         AuthMiddleware::require();
         $user = AuthMiddleware::user();
+        $csrfHeader = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
+        if (!CsrfService::validate($csrfHeader)) {
+            $this->jsonError('Invalid CSRF token.', 419);
+            return;
+        }
 
         $jobRepo = new JobRepository();
         $job     = $jobRepo->findById($id);

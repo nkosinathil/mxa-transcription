@@ -13,6 +13,7 @@ use App\Repositories\CaseRepository;
 use App\Repositories\UploadRepository;
 use App\Repositories\JobRepository;
 use App\Services\AuditService;
+use App\Services\CsrfService;
 
 class CaseController
 {
@@ -35,6 +36,12 @@ class CaseController
     {
         RoleMiddleware::require('analyst');
         $user = AuthMiddleware::user();
+
+        if (!CsrfService::validate($_POST['csrf_token'] ?? null)) {
+            $_SESSION['flash_error'] = 'Security validation failed. Please retry.';
+            header('Location: /cases/create');
+            exit;
+        }
 
         $name        = trim($_POST['name']        ?? '');
         $description = trim($_POST['description'] ?? '');

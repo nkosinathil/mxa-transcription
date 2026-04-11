@@ -24,10 +24,10 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\Config;
+use Firebase\JWT\JWK;
+use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Firebase\JWT\JWT;
-use Firebase\JWT\JWK;
 use RuntimeException;
 
 class KeycloakService
@@ -48,7 +48,10 @@ class KeycloakService
         $this->clientSecret  = Config::get('keycloak.client_secret');
         $this->redirectUri   = Config::get('keycloak.redirect_uri');
         $this->realmUrl      = "{$this->baseUrl}/realms/{$this->realm}";
-        $this->http          = new Client(['timeout' => 10, 'verify' => false]);
+        $this->http          = new Client([
+            'timeout' => 10,
+            'verify'  => Config::get('keycloak.verify_tls', true),
+        ]);
     }
 
     /**
@@ -113,28 +116,32 @@ class KeycloakService
     /**
      * Decode a Keycloak ID token and extract user profile + roles.
      *
-     * In production you should verify the JWT signature using Keycloak's
-     * public JWKS endpoint.  We do a lightweight verification here that
-     * validates the structure and expiry.  For a production deployment,
-     * enable full signature verification using the JWK keys method below.
+     * Verifies the JWT signature against Keycloak JWKS and validates
+     * issuer / audience claims before accepting the token.
      *
      * @return array<string,mixed>
      */
     public function decodeIdToken(string $idToken): array
     {
-        // Decode without signature verification (suitable for internal networks).
-        // For production HTTPS environments, replace with verified decode using JWKS.
-        $parts = explode('.', $idToken);
-        if (count($parts) !== 3) {
-            throw new RuntimeException('Invalid ID token format.');
+        try {
+            $jwksResponse = $this->http->get("{$this->realmUrl}/protocol/openid-connect/certs");
+            $jwks = json_decode((string) $jwksResponse->getBody(), true, 512, JSON_THROW_ON_ERROR);
+            $decoded = JWT::decode($idToken, JWK::parseKeySet($jwks));
+            $payload = json_decode(json_encode($decoded, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            throw new RuntimeException('ID token signature verification failed: ' . $e->getMessage());
         }
 
-        $payload = json_decode(
-            base64_decode(strtr($parts[1], '-_', '+/')),
-            true,
-            512,
-            JSON_THROW_ON_ERROR
-        );
+        $issuer = $payload['iss'] ?? null;
+        if ($issuer !== $this->realmUrl) {
+            throw new RuntimeException('ID token issuer mismatch.');
+        }
+
+        $aud = $payload['aud'] ?? null;
+        $audiences = is_array($aud) ? $aud : [$aud];
+        if (!in_array($this->clientId, $audiences, true)) {
+            throw new RuntimeException('ID token audience mismatch.');
+        }
 
         // Basic expiry check
         if (!empty($payload['exp']) && $payload['exp'] < time()) {

@@ -20,18 +20,26 @@ class Config
 
     public static function load(): void
     {
+        $appUrl = rtrim($_ENV['APP_URL'] ?? 'http://localhost', '/');
+        $defaultSecureCookie = str_starts_with(strtolower($appUrl), 'https://');
+
         self::$data = [
             'app' => [
                 'name'      => $_ENV['APP_NAME']      ?? 'MXA Transcription',
                 'env'       => $_ENV['APP_ENV']       ?? 'production',
-                'url'       => rtrim($_ENV['APP_URL'] ?? 'http://localhost', '/'),
+                'url'       => $appUrl,
                 'debug'     => filter_var($_ENV['APP_DEBUG'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
                 'log_level' => $_ENV['APP_LOG_LEVEL'] ?? 'warning',
             ],
             'session' => [
-                'name'     => $_ENV['SESSION_NAME']     ?? 'mxa_session',
-                'lifetime' => (int) ($_ENV['SESSION_LIFETIME'] ?? 7200),
-                'secret'   => $_ENV['SESSION_SECRET']   ?? '',
+                'name'          => $_ENV['SESSION_NAME']     ?? 'mxa_session',
+                'lifetime'      => (int) ($_ENV['SESSION_LIFETIME'] ?? 7200),
+                'secret'        => $_ENV['SESSION_SECRET']   ?? '',
+                'secure_cookie' => filter_var(
+                    $_ENV['SESSION_SECURE_COOKIE'] ?? ($defaultSecureCookie ? 'true' : 'false'),
+                    FILTER_VALIDATE_BOOLEAN
+                ),
+                'same_site'     => $_ENV['SESSION_SAME_SITE'] ?? 'Lax',
             ],
             'db' => [
                 'host' => $_ENV['DB_HOST'] ?? 'localhost',
@@ -41,11 +49,12 @@ class Config
                 'pass' => $_ENV['DB_PASS'] ?? '',
             ],
             'keycloak' => [
-                'base_url'     => rtrim($_ENV['KEYCLOAK_BASE_URL'] ?? '', '/'),
-                'realm'        => $_ENV['KEYCLOAK_REALM']        ?? '',
-                'client_id'    => $_ENV['KEYCLOAK_CLIENT_ID']    ?? '',
-                'client_secret'=> $_ENV['KEYCLOAK_CLIENT_SECRET']?? '',
+                'base_url'      => rtrim($_ENV['KEYCLOAK_BASE_URL'] ?? '', '/'),
+                'realm'         => $_ENV['KEYCLOAK_REALM']        ?? '',
+                'client_id'     => $_ENV['KEYCLOAK_CLIENT_ID']    ?? '',
+                'client_secret' => $_ENV['KEYCLOAK_CLIENT_SECRET'] ?? '',
                 'redirect_uri' => $_ENV['KEYCLOAK_REDIRECT_URI'] ?? '',
+                'verify_tls'    => filter_var($_ENV['KEYCLOAK_VERIFY_TLS'] ?? 'true', FILTER_VALIDATE_BOOLEAN),
             ],
             'python_api' => [
                 'base_url' => rtrim($_ENV['PYTHON_API_BASE_URL'] ?? '', '/'),

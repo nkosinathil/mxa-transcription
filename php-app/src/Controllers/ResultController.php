@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Middleware\AuthMiddleware;
+use App\Repositories\CaseRepository;
 use App\Repositories\JobRepository;
 use App\Services\AuditService;
 use App\Services\PythonApiClient;
@@ -23,7 +24,15 @@ class ResultController
         $jobRepo = new JobRepository();
         $job     = $jobRepo->findById($jobId);
 
-        if (!$job || $job['user_id'] !== $user['id']) {
+        if (!$job) {
+            http_response_code(404);
+            require __DIR__ . '/../Views/errors/404.php';
+            return;
+        }
+
+        $caseRepo = new CaseRepository();
+        $case = $caseRepo->findById((int) $job['case_id'], (int) $user['id']);
+        if (!$case) {
             http_response_code(404);
             require __DIR__ . '/../Views/errors/404.php';
             return;
@@ -55,7 +64,15 @@ class ResultController
         $jobRepo = new JobRepository();
         $job     = $jobRepo->findById($jobId);
 
-        if (!$job || $job['user_id'] !== $user['id']) {
+        if (!$job) {
+            http_response_code(403);
+            echo 'Access denied.';
+            return;
+        }
+
+        $caseRepo = new CaseRepository();
+        $case = $caseRepo->findById((int) $job['case_id'], (int) $user['id']);
+        if (!$case) {
             http_response_code(403);
             echo 'Access denied.';
             return;
@@ -72,7 +89,23 @@ class ResultController
         try {
             $api     = new PythonApiClient();
             $full    = $api->getJobResult($jobId);
-            $content = $full['transcript_text'] ?? '';
+            $segments = $full['segments'] ?? [];
+            if (!is_array($segments)) {
+                $segments = [];
+            }
+            $lines = [];
+            foreach ($segments as $seg) {
+                if (!is_array($seg)) {
+                    continue;
+                }
+                $speaker = (string) ($seg['speaker'] ?? 'Speaker 1');
+                $text = trim((string) ($seg['text'] ?? ''));
+                if ($text === '') {
+                    continue;
+                }
+                $lines[] = sprintf("[%s] %s", $speaker, $text);
+            }
+            $content = implode("\n", $lines);
         } catch (\Throwable $e) {
             http_response_code(500);
             echo 'Could not retrieve transcript.';

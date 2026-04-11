@@ -145,6 +145,7 @@ async def get_job_result(job_id: int) -> JobResultResponse:
 
     # Load transcript segments from the JSON file stored in MinIO
     segments: list[SegmentResult] = []
+    transcript_text: Optional[str] = None
     if row["minio_json_path"] and row["status"] == "completed":
         try:
             minio = MinioService()
@@ -159,6 +160,9 @@ async def get_job_result(job_id: int) -> JobResultResponse:
                 )
                 for seg in payload.get("segments", [])
             ]
+            transcript_text = "\n".join(
+                f"[{seg.speaker}] {seg.text}" for seg in segments if seg.text
+            )
         except Exception as exc:
             logger.warning("Could not load segments for job %d: %s", job_id, exc)
 
@@ -173,6 +177,7 @@ async def get_job_result(job_id: int) -> JobResultResponse:
         diarization_available=bool(row["diarization_available"]) if row["diarization_available"] is not None else False,
         diarization_note=row["diarization_note"],
         segments=segments,
+        transcript_text=transcript_text,
         minio_transcript_path=row["minio_transcript_path"],
         minio_json_path=row["minio_json_path"],
         minio_html_path=row["minio_html_path"],

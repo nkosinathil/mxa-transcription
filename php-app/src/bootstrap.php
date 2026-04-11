@@ -35,14 +35,16 @@ ini_set('error_log', __DIR__ . '/../storage/logs/php_errors.log');
 // 5. Session
 $sessionName     = App\Config\Config::get('session.name', 'mxa_session');
 $sessionLifetime = App\Config\Config::get('session.lifetime', 7200);
+$sessionSecure   = App\Config\Config::get('session.secure_cookie', false);
+$sessionSameSite = App\Config\Config::get('session.same_site', 'Lax');
 
 session_name($sessionName);
 session_set_cookie_params([
     'lifetime' => $sessionLifetime,
     'path'     => '/',
-    'secure'   => false,    // set to true when HTTPS is configured
+    'secure'   => (bool) $sessionSecure,
     'httponly' => true,
-    'samesite' => 'Lax',
+    'samesite' => (string) $sessionSameSite,
 ]);
 
 if (session_status() === PHP_SESSION_NONE) {

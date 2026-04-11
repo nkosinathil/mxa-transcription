@@ -93,11 +93,14 @@ ob_start();
 <script>
 const jobId = <?= (int)$job['id'] ?>;
 let lastEventCount = <?= count($events) ?>;
+const csrfToken = window.MXA_CSRF_TOKEN || '';
 
 function poll() {
     setTimeout(async () => {
         try {
-            const res  = await fetch(`/jobs/${jobId}/status`);
+            const res  = await fetch(`/jobs/${jobId}/status`, {
+                headers: { 'X-CSRF-Token': csrfToken }
+            });
             const data = await res.json();
 
             document.getElementById('statusBadge').className = `badge badge-${data.status}`;

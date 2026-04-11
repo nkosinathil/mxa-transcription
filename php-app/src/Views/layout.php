@@ -20,6 +20,7 @@
 
 use App\Middleware\AuthMiddleware;
 use App\Middleware\RoleMiddleware;
+use App\Services\CsrfService;
 
 $user       = AuthMiddleware::user();
 $pageTitle  = $pageTitle  ?? 'MXA Transcription';
@@ -29,6 +30,7 @@ $flashOk    = $_SESSION['flash_ok']    ?? null;
 unset($_SESSION['flash_error'], $_SESSION['flash_ok']);
 
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$csrfToken = CsrfService::generate();
 function navActive(string $prefix): string {
     global $currentPath;
     return str_starts_with($currentPath, $prefix) ? 'nav-active' : '';
@@ -113,5 +115,8 @@ function navActive(string $prefix): string {
 </main>
 
 <script src="/assets/js/app.js"></script>
+<script>
+window.MXA_CSRF_TOKEN = <?= json_encode($csrfToken, JSON_THROW_ON_ERROR) ?>;
+</script>
 </body>
 </html>

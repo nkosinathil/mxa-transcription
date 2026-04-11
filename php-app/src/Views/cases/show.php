@@ -41,6 +41,7 @@ ob_start();
                         <td>
                             <form method="POST" action="/jobs/<?= (int)$upload['id'] ?>/start"
                                   class="inline-form" data-upload-id="<?= (int)$upload['id'] ?>">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
                                 <input type="hidden" name="model_size" value="base">
                                 <input type="hidden" name="diarization" value="1">
                                 <button type="submit" class="btn btn-sm btn-primary">Start Processing</button>
@@ -113,7 +114,9 @@ document.querySelectorAll('[data-job-id]').forEach(row => {
 function pollJobStatus(jobId, row) {
     setTimeout(async () => {
         try {
-            const res = await fetch(`/jobs/${jobId}/status`);
+            const res = await fetch(`/jobs/${jobId}/status`, {
+                headers: { 'X-CSRF-Token': window.MXA_CSRF_TOKEN || '' }
+            });
             const data = await res.json();
             const badge = row.querySelector('.badge');
             if (badge) {

@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     app_version: str = "1.0.0"
     debug: bool = False
     log_level: str = "INFO"
+    cors_allow_origins: str = "http://localhost"
 
     # ------------------------------------------------------------------
     # Internal API security
@@ -76,6 +77,16 @@ class Settings(BaseSettings):
     default_model_size: str = "base"
     default_device: str = "auto"
     max_upload_bytes: int = 524_288_000         # 500 MB
+
+    def cors_origin_list(self) -> list[str]:
+        """
+        Parse CORS origins from comma-separated CORS_ALLOW_ORIGINS env var.
+        Use '*' explicitly only in trusted internal environments.
+        """
+        raw = (self.cors_allow_origins or "").strip()
+        if raw == "":
+            return ["http://localhost"]
+        return [origin.strip() for origin in raw.split(",") if origin.strip()]
 
 
 @lru_cache

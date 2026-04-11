@@ -20,6 +20,7 @@ use App\Middleware\RoleMiddleware;
 use App\Repositories\CaseRepository;
 use App\Repositories\UploadRepository;
 use App\Services\AuditService;
+use App\Services\CsrfService;
 use App\Services\PythonApiClient;
 
 class UploadController
@@ -44,6 +45,11 @@ class UploadController
     {
         RoleMiddleware::require('analyst');
         $user = AuthMiddleware::user();
+
+        if (!CsrfService::validate($_POST['csrf_token'] ?? null)) {
+            $this->jsonError('Invalid CSRF token.', 419);
+            return;
+        }
 
         $caseId = (int) ($_POST['case_id'] ?? 0);
         if (!$caseId) {

@@ -94,13 +94,13 @@ Interactive setup scripts for each server with automatic configuration:
 
 ```bash
 # 1. App Server (192.168.1.66) - PHP/Apache/PostgreSQL
-sudo ./setup-app-server.sh
+sudo ./scripts/deploy/setup-app-server.sh
 
 # 2. Python Server (192.168.1.90) - FastAPI/Celery/Redis/MinIO
-sudo ./setup-python-server.sh
+sudo ./scripts/deploy/setup-python-server.sh
 
 # 3. SSO Server (192.168.1.59) - Keycloak
-sudo ./setup-sso-server.sh
+sudo ./scripts/deploy/setup-sso-server.sh
 ```
 
 Each script will:

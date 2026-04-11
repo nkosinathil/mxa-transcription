@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Config\Config;
 use RuntimeException;
 
 class CsrfService
@@ -60,7 +61,19 @@ class CsrfService
     }
 
     /**
-     * Validate a CSRF token and remove it (one-time use).
+     * Convenience helper for embedding token fields in HTML forms.
+     */
+    public static function hiddenInputField(): string
+    {
+        $token = self::generate();
+        return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '">';
+    }
+
+    /**
+     * Validate a CSRF token.
+     *
+     * Tokens are intentionally reusable within a session/tab lifetime so that
+     * multi-step AJAX workflows (upload -> start job) can post more than once.
      *
      * @param string|null $token The token to validate
      * @return bool True if valid, false otherwise
@@ -79,13 +92,16 @@ class CsrfService
             return false;
         }
 
-        // Check if token exists
         if (!isset($_SESSION[self::SESSION_KEY][$token])) {
             return false;
         }
 
-        // Token is valid - remove it (one-time use)
-        unset($_SESSION[self::SESSION_KEY][$token]);
+        $createdAt = (int) $_SESSION[self::SESSION_KEY][$token];
+        $maxAge = (int) Config::get('csrf.lifetime', 3600);
+        if ((time() - $createdAt) > $maxAge) {
+            unset($_SESSION[self::SESSION_KEY][$token]);
+            return false;
+        }
 
         return true;
     }
