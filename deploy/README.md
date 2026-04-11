@@ -242,6 +242,7 @@ python3 validate-deployment.py --role all
 ## Security notes
 
 - Replace all placeholder secrets before production use
+- Avoid single quotes or line breaks in `DB_PASSWORD`; the shell deploy scripts reject those characters for safe SQL creation
 - Prefer HTTPS on the frontend and update app envs to use `https://` URLs
 - Restrict backend, Redis, and MinIO ports to trusted networks
 - Store deployment env files securely; they contain secrets

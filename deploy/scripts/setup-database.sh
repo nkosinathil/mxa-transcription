@@ -16,6 +16,10 @@ require_root
 require_commands apt-get systemctl runuser
 [[ "${DB_USER}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || die "DB_USER contains unsupported characters"
 [[ "${DB_NAME}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || die "DB_NAME contains unsupported characters"
+[[ "${DB_PASSWORD}" != *"'"* ]] || die "DB_PASSWORD must not contain single quotes"
+[[ "${DB_PASSWORD}" != *$'
+'* ]] || die "DB_PASSWORD must not contain newlines"
+[[ "${DB_PASSWORD}" != *$''* ]] || die "DB_PASSWORD must not contain carriage returns"
 
 apt_install postgresql postgresql-client
 require_commands psql
@@ -30,10 +34,8 @@ fi
 user_exists="$(runuser -u "${DB_SUPERUSER}" -- psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='${DB_USER}'" | tr -d '[:space:]' || true)"
 db_exists="$(runuser -u "${DB_SUPERUSER}" -- psql -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'" | tr -d '[:space:]' || true)"
 
-db_password_sql="${DB_PASSWORD//\'/\'\'}"
-
 if [[ "${user_exists}" != "1" ]]; then
-    run runuser -u "${DB_SUPERUSER}" -- psql -c "CREATE USER ${DB_USER} WITH PASSWORD '${db_password_sql}';"
+    run runuser -u "${DB_SUPERUSER}" -- psql -c "CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';"
 fi
 if [[ "${db_exists}" != "1" ]]; then
     run runuser -u "${DB_SUPERUSER}" -- psql -c "CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};"

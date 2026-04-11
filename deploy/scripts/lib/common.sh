@@ -318,6 +318,13 @@ write_python_runtime_env() {
         MAX_UPLOAD_SIZE "${MAX_UPLOAD_SIZE}"
 }
 
+validate_template_value() {
+    local token="$1"
+    local value="$2"
+    [[ "${value}" != *$'\n'* ]] || die "Template value for ${token} must not contain newlines"
+    [[ "${value}" != *$'\r'* ]] || die "Template value for ${token} must not contain carriage returns"
+}
+
 render_template() {
     local template_file="$1"
     local output_file="$2"
@@ -331,6 +338,7 @@ render_template() {
         local token="$1"
         local value="$2"
         shift 2
+        validate_template_value "${token}" "${value}"
         value="$(printf '%s' "${value}" | sed -e 's/[\\/&|]/\\&/g')"
         sed -i "s|{{${token}}}|${value}|g" "${tmp_file}"
     done
