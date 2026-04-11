@@ -14,12 +14,13 @@ load_deploy_env
 
 require_root
 require_commands apt-get systemctl runuser
+newline_char=$'\n'
+carriage_return_char="$(printf '\r')"
 [[ "${DB_USER}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || die "DB_USER contains unsupported characters"
 [[ "${DB_NAME}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || die "DB_NAME contains unsupported characters"
 [[ "${DB_PASSWORD}" != *"'"* ]] || die "DB_PASSWORD must not contain single quotes"
-[[ "${DB_PASSWORD}" != *$'
-'* ]] || die "DB_PASSWORD must not contain newlines"
-[[ "${DB_PASSWORD}" != *$''* ]] || die "DB_PASSWORD must not contain carriage returns"
+[[ "${DB_PASSWORD}" != *"${newline_char}"* ]] || die "DB_PASSWORD must not contain newlines"
+[[ "${DB_PASSWORD}" != *"${carriage_return_char}"* ]] || die "DB_PASSWORD must not contain carriage returns"
 
 apt_install postgresql postgresql-client
 require_commands psql

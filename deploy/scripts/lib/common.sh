@@ -321,8 +321,11 @@ write_python_runtime_env() {
 validate_template_value() {
     local token="$1"
     local value="$2"
-    [[ "${value}" != *$'\n'* ]] || die "Template value for ${token} must not contain newlines"
-    [[ "${value}" != *$'\r'* ]] || die "Template value for ${token} must not contain carriage returns"
+    local newline_char=$'\n'
+    local carriage_return_char
+    carriage_return_char="$(printf '\r')"
+    [[ "${value}" != *"${newline_char}"* ]] || die "Template value for ${token} must not contain newlines"
+    [[ "${value}" != *"${carriage_return_char}"* ]] || die "Template value for ${token} must not contain carriage returns"
 }
 
 render_template() {
