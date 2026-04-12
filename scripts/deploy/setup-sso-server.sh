@@ -6,18 +6,37 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/../lib/common.sh"
 
+parse_non_interactive_flags "$@"
 require_root
 print_header "MXA Transcription - SSO Server Setup"
 
-KC_VERSION="$(prompt_default "Keycloak version" "26.1.3")"
-KC_ADMIN="$(prompt_default "Keycloak admin username" "admin")"
-KC_ADMIN_PASS="$(prompt_secret_confirm "Keycloak admin password")"
-KC_DB_NAME="$(prompt_default "Keycloak database name" "keycloak_db")"
-KC_DB_USER="$(prompt_default "Keycloak database user" "keycloak_user")"
-KC_DB_PASS="$(prompt_secret_confirm "Keycloak database password")"
-REALM_NAME="$(prompt_required "Realm name for MXA")"
-CLIENT_ID="$(prompt_default "Client ID" "transcription-web")"
-APP_URL="$(prompt_default "Application URL (used for redirect URIs)" "https://transcription.example.com")"
+KC_VERSION="${KC_VERSION:-26.1.3}"
+KC_ADMIN="${KC_ADMIN:-admin}"
+KC_DB_NAME="${KC_DB_NAME:-keycloak_db}"
+KC_DB_USER="${KC_DB_USER:-keycloak_user}"
+REALM_NAME="${REALM_NAME:-}"
+CLIENT_ID="${CLIENT_ID:-transcription-web}"
+APP_URL="${APP_URL:-https://transcription.example.com}"
+KC_ADMIN_PASS="${KC_ADMIN_PASS:-}"
+KC_DB_PASS="${KC_DB_PASS:-}"
+
+if [[ "${NON_INTERACTIVE}" == "true" ]]; then
+  require_env_vars KC_ADMIN_PASS KC_DB_PASS REALM_NAME
+else
+  KC_VERSION="$(prompt_default "Keycloak version" "${KC_VERSION}")"
+  KC_ADMIN="$(prompt_default "Keycloak admin username" "${KC_ADMIN}")"
+  if [[ -z "${KC_ADMIN_PASS}" ]]; then
+    KC_ADMIN_PASS="$(prompt_secret_confirm "Keycloak admin password")"
+  fi
+  KC_DB_NAME="$(prompt_default "Keycloak database name" "${KC_DB_NAME}")"
+  KC_DB_USER="$(prompt_default "Keycloak database user" "${KC_DB_USER}")"
+  if [[ -z "${KC_DB_PASS}" ]]; then
+    KC_DB_PASS="$(prompt_secret_confirm "Keycloak database password")"
+  fi
+  REALM_NAME="$(prompt_required "Realm name for MXA")"
+  CLIENT_ID="$(prompt_default "Client ID" "${CLIENT_ID}")"
+  APP_URL="$(prompt_default "Application URL (used for redirect URIs)" "${APP_URL}")"
+fi
 
 print_step "Install runtime dependencies"
 apt-get update
@@ -27,6 +46,7 @@ print_step "Configure Keycloak database"
 systemctl enable --now postgresql
 sudo -u postgres psql -c "CREATE DATABASE ${KC_DB_NAME};" 2>/dev/null || print_warn "Database ${KC_DB_NAME} already exists"
 sudo -u postgres psql -c "CREATE USER ${KC_DB_USER} WITH PASSWORD '${KC_DB_PASS}';" 2>/dev/null || print_warn "User ${KC_DB_USER} already exists"
+sudo -u postgres psql -c "ALTER USER ${KC_DB_USER} WITH PASSWORD '${KC_DB_PASS}';"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE ${KC_DB_NAME} TO ${KC_DB_USER};"
 sudo -u postgres psql -d "${KC_DB_NAME}" -c "GRANT ALL ON SCHEMA public TO ${KC_DB_USER};"
 

@@ -7,6 +7,7 @@ source "$SCRIPT_DIR/../lib/common.sh"
 
 ensure_root
 print_header "MXA Transcription - App Server Setup"
+parse_common_flags "$@"
 
 APP_DIR="${APP_DIR:-/opt/mxa-transcription}"
 REPO_DIR="${REPO_DIR:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
@@ -26,10 +27,12 @@ MINIO_ENDPOINT="${MINIO_ENDPOINT:-192.168.1.90:9000}"
 MINIO_ACCESS_KEY="${MINIO_ACCESS_KEY:-}"
 MINIO_SECRET_KEY="${MINIO_SECRET_KEY:-}"
 
-if [[ -z "$DB_PASS" || -z "$KEYCLOAK_CLIENT_SECRET" || -z "$PYTHON_API_KEY" || -z "$MINIO_ACCESS_KEY" || -z "$MINIO_SECRET_KEY" ]]; then
-  echo "Required env vars missing. Set: DB_PASS, KEYCLOAK_CLIENT_SECRET, PYTHON_API_KEY, MINIO_ACCESS_KEY, MINIO_SECRET_KEY"
-  exit 1
-fi
+validate_required_env_vars \
+  DB_PASS \
+  KEYCLOAK_CLIENT_SECRET \
+  PYTHON_API_KEY \
+  MINIO_ACCESS_KEY \
+  MINIO_SECRET_KEY
 
 print_step "Installing system packages"
 apt-get update
@@ -37,8 +40,12 @@ apt-get install -y apache2 php php-fpm php-pgsql php-curl php-json php-mbstring 
 
 print_step "Creating app directory and syncing code"
 mkdir -p "$APP_DIR"
+if [[ ! -d "${REPO_DIR}/php-app" || ! -d "${REPO_DIR}/database" ]]; then
+  err "Repository source directories missing under ${REPO_DIR}"
+  exit 1
+fi
 rsync -a --delete "$REPO_DIR/php-app/" "$PHP_APP_DIR/"
-rsync -a "$REPO_DIR/database/" "$APP_DIR/database/"
+rsync -a --delete "$REPO_DIR/database/" "$APP_DIR/database/"
 chown -R www-data:www-data "$PHP_APP_DIR/storage"
 
 print_step "Configuring PostgreSQL"

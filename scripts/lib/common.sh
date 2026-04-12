@@ -8,6 +8,10 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+is_non_interactive() {
+  [[ "${NON_INTERACTIVE:-0}" == "1" || ! -t 0 ]]
+}
+
 print_header() {
   echo -e "\n${BLUE}================================================================${NC}"
   echo -e "${BLUE}$*${NC}"
@@ -61,6 +65,10 @@ prompt_default() {
   local message="${1}"
   local default_value="${2}"
   local response
+  if is_non_interactive; then
+    printf '%s' "${default_value}"
+    return
+  fi
   read -r -p "${message} [${default_value}]: " response
   if [[ -z "${response}" ]]; then
     response="${default_value}"
@@ -71,6 +79,10 @@ prompt_default() {
 prompt_required() {
   local message="${1}"
   local response=""
+  if is_non_interactive; then
+    err "Missing required value for: ${message}. Provide it via environment variables in non-interactive mode."
+    exit 1
+  fi
   while [[ -z "${response}" ]]; do
     read -r -p "${message}: " response
   done
@@ -81,6 +93,13 @@ prompt_secret() {
   local var_name="${1}"
   local message="${2}"
   local response
+  if [[ -n "${!var_name:-}" ]]; then
+    return
+  fi
+  if is_non_interactive; then
+    err "Missing required secret: ${var_name}. Set it as an environment variable in non-interactive mode."
+    exit 1
+  fi
   read -r -s -p "${message}: " response
   echo ""
   printf -v "${var_name}" '%s' "${response}"
@@ -90,6 +109,10 @@ prompt_secret_confirm() {
   local message="${1}"
   local first
   local second
+  if is_non_interactive; then
+    err "Cannot prompt for ${message} in non-interactive mode."
+    exit 1
+  fi
   while true; do
     read -r -s -p "${message}: " first
     echo ""
@@ -108,6 +131,17 @@ prompt_value() {
   local message="${2}"
   local default_value="${3}"
   local response
+  if [[ -n "${!var_name:-}" ]]; then
+    return
+  fi
+  if is_non_interactive; then
+    if [[ -z "${default_value}" ]]; then
+      err "Missing required value: ${var_name}. Set it as an environment variable in non-interactive mode."
+      exit 1
+    fi
+    printf -v "${var_name}" '%s' "${default_value}"
+    return
+  fi
   read -r -p "${message} [${default_value}]: " response
   if [[ -z "${response}" ]]; then
     response="${default_value}"
@@ -122,11 +156,22 @@ write_env_value() {
   local escaped
   escaped=$(printf '%s' "${value}" | sed 's/[\/&]/\\&/g')
 
-  if rg -q "^${key}=" "${env_file}"; then
+  if grep -q "^${key}=" "${env_file}"; then
     sed -i "s|^${key}=.*|${key}=${escaped}|" "${env_file}"
   else
     printf '\n%s=%s\n' "${key}" "${value}" >> "${env_file}"
   fi
+}
+
+read_env_value() {
+  local env_file="${1}"
+  local key="${2}"
+  local line
+  line=$(grep "^${key}=" "${env_file}" 2>/dev/null | head -n 1 || true)
+  if [[ -z "${line}" ]]; then
+    return 1
+  fi
+  printf '%s' "${line#*=}"
 }
 
 set_env_var() {
