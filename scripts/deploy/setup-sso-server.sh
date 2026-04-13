@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/../lib/common.sh"
 
-parse_non_interactive_flags "$@"
+parse_non_interactive_flag "$@"
 require_root
 print_header "MXA Transcription - SSO Server Setup"
 

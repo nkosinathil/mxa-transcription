@@ -7,7 +7,7 @@ source "$SCRIPT_DIR/../lib/common.sh"
 
 ensure_root
 print_header "MXA Transcription - App Server Setup"
-parse_common_flags "$@"
+parse_non_interactive_flag "$@"
 
 APP_DIR="${APP_DIR:-/opt/mxa-transcription}"
 REPO_DIR="${REPO_DIR:-$(cd "$SCRIPT_DIR/../.." && pwd)}"

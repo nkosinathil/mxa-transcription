@@ -9,7 +9,27 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 is_non_interactive() {
-  [[ "${NON_INTERACTIVE:-0}" == "1" || ! -t 0 ]]
+  local mode="${NON_INTERACTIVE:-0}"
+  [[ "${mode}" == "1" || "${mode,,}" == "true" || ! -t 0 ]]
+}
+
+parse_non_interactive_flag() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --non-interactive)
+        export NON_INTERACTIVE=true
+        ;;
+    esac
+    shift
+  done
+}
+
+parse_non_interactive_flags() {
+  parse_non_interactive_flag "$@"
+}
+
+parse_common_flags() {
+  parse_non_interactive_flag "$@"
 }
 
 print_header() {
@@ -193,4 +213,26 @@ bool_from_url() {
   else
     echo "false"
   fi
+}
+
+validate_required_env_vars() {
+  local key value
+  for key in "$@"; do
+    value="${!key:-}"
+    if [[ -z "${value}" ]]; then
+      if is_non_interactive; then
+        err "Missing required env var: ${key}"
+        exit 1
+      fi
+      read -r -p "Enter ${key}: " value
+      while [[ -z "${value}" ]]; do
+        read -r -p "Enter ${key}: " value
+      done
+      export "${key}=${value}"
+    fi
+  done
+}
+
+require_env_vars() {
+  validate_required_env_vars "$@"
 }
