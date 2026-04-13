@@ -101,6 +101,13 @@ for key, generated in secrets_map.items():
     if is_placeholder(get_value(key)):
         set_value(key, generated)
 
+# Keep legacy aliases in sync so setup scripts can consume either key naming
+# without operator confusion.
+realm = get_value("KEYCLOAK_REALM") or "mxa"
+client_id = get_value("KEYCLOAK_CLIENT_ID") or "transcription-web"
+set_value("REALM_NAME", realm)
+set_value("CLIENT_ID", client_id)
+
 config_path.write_text(content, encoding="utf-8")
 PY
 
