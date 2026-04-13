@@ -20,7 +20,7 @@ APP_URL="${APP_URL:-https://transcription.example.com}"
 KC_ADMIN_PASS="${KC_ADMIN_PASS:-}"
 KC_DB_PASS="${KC_DB_PASS:-}"
 
-if [[ "${NON_INTERACTIVE}" == "true" ]]; then
+if [[ "${NON_INTERACTIVE:-false}" == "true" ]]; then
   require_env_vars KC_ADMIN_PASS KC_DB_PASS REALM_NAME
 else
   KC_VERSION="$(prompt_default "Keycloak version" "${KC_VERSION}")"
