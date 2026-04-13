@@ -112,6 +112,17 @@ Each script will:
 
 See the full deployment guide: [docs/deployment.md](docs/deployment.md)
 
+For a single-entry deployment flow (config file + one command), see
+[`scripts/README.md`](scripts/README.md) and use:
+
+```bash
+# Deploy one role from scripts/deploy/.env
+sudo ./scripts/deploy/deploy.sh --role app
+
+# Roll back one role
+sudo ./scripts/deploy/rollback.sh --role app
+```
+
 ### Manual Setup
 
 ```bash
