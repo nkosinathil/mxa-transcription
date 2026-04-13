@@ -1,0 +1,33 @@
+# Python Backend – requirements.txt
+#
+# Install with:  pip install -r requirements.txt
+#
+# These are the Python packages needed to run the FastAPI server and Celery
+# workers.  The versions below are minimum tested versions; pin to exact
+# versions in a production lockfile (pip-compile / pip freeze).
+
+# ---- Core web framework ----
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0          # ASGI server used to run FastAPI
+
+# ---- Task queue ----
+celery[redis]>=5.4.0               # task queue
+redis>=5.0.0                       # Redis Python client
+
+# ---- Object storage ----
+minio>=7.2.0                       # MinIO / S3-compatible client
+
+# ---- Database ----
+psycopg2-binary>=2.9.9             # PostgreSQL driver
+
+# ---- Configuration ----
+pydantic-settings>=2.2.0           # reads .env into Settings class
+
+# ---- Audio processing (copied from original requirements.txt) ----
+faster-whisper>=1.0.3
+ffmpeg-python>=0.2.0
+imageio-ffmpeg>=0.5.1
+mutagen>=1.47.0
+pyannote.audio>=3.1.1
+soundfile>=0.12.1
+numpy>=1.26.0
