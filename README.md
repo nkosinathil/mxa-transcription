@@ -103,6 +103,20 @@ sudo ./scripts/deploy/setup-python-server.sh
 sudo ./scripts/deploy/setup-sso-server.sh
 ```
 
+Or use the unified single-config flow:
+
+```bash
+# 1) Generate a config with fresh secrets
+./scripts/deploy/init-config.sh --output ./scripts/deploy/.env
+
+# 2) Edit only server-specific values (IPs/URLs) in scripts/deploy/.env
+
+# 3) Run on each server by role
+sudo ./scripts/deploy/deploy.sh --role sso --config ./scripts/deploy/.env
+sudo ./scripts/deploy/deploy.sh --role python --config ./scripts/deploy/.env
+sudo ./scripts/deploy/deploy.sh --role app --config ./scripts/deploy/.env
+```
+
 Each script will:
 - Prompt for configuration values (database passwords, API keys, etc.)
 - Install required system packages

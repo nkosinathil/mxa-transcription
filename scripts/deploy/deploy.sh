@@ -17,6 +17,7 @@ Options:
   --non-interactive  Disable prompts; require env/config values
 
 Examples:
+  ./scripts/deploy/init-config.sh --config ./scripts/deploy/.env
   sudo ./scripts/deploy/deploy.sh --role sso --config ./scripts/deploy/.env --non-interactive
   sudo ./scripts/deploy/deploy.sh --role app --config ./scripts/deploy/.env --rollback
 EOF
